@@ -7,13 +7,12 @@ import '../../account/screens/account_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../../catalog/models/document_item.dart';
 import '../services/professor_service.dart';
-import 'upload_document_screen.dart';
-import 'wallet_screen.dart';
 
 /// Écran d'accueil professeur : "Mes documents", avec un bouton pour
-/// publier/dépublier chacun, un bouton flottant pour en envoyer un nouveau
-/// directement depuis l'app, et un accès au portefeuille (icône dans
-/// l'AppBar).
+/// publier/dépublier chacun. L'envoi d'un NOUVEAU document (upload de
+/// fichier) n'est pas encore construit dans l'app — les documents existants
+/// (créés depuis le site web) peuvent en revanche être publiés directement
+/// d'ici, ce qui évite d'avoir à repasser par le site pour ça.
 class ProfessorHomeScreen extends StatefulWidget {
   const ProfessorHomeScreen({super.key});
 
@@ -70,13 +69,6 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
         foregroundColor: AppTheme.brandBlue,
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_balance_wallet_outlined),
-            tooltip: 'Portefeuille',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const WalletScreen()),
-            ),
-          ),
-          IconButton(
             icon: const Icon(Icons.person_outline),
             tooltip: 'Mon compte',
             onPressed: () => Navigator.of(context).push(
@@ -84,18 +76,6 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final created = await Navigator.of(context).push<bool>(
-            MaterialPageRoute(builder: (_) => const UploadDocumentScreen()),
-          );
-          if (created == true && mounted) {
-            setState(() => _future = _load());
-          }
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Nouveau document'),
       ),
       body: SafeArea(
         child: FutureBuilder<List<DocumentItem>>(
@@ -135,7 +115,7 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(24),
                   child: Text(
-                    "Vous n'avez pas encore de document. Appuyez sur \"Nouveau document\" en bas pour en envoyer un.",
+                    "Vous n'avez pas encore de document. Publiez-en un depuis le site web pour l'instant — l'envoi d'un document directement depuis l'app arrive bientôt.",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black54),
                   ),

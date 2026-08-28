@@ -18,6 +18,27 @@ dependencies:
   # backend) — package officiel Dart, minimal et bien connu.
   http: ^1.1.0
 
+  # Utilisé pour préciser le Content-Type exact (ex. "application/pdf",
+  # "image/jpeg") d'un fichier envoyé en multipart/form-data (upload de
+  # document, copie d'élève pour la correction IA) — le serveur rejette tout
+  # fichier dont le type déclaré ne correspond pas exactement à ce qu'il
+  # attend (voir khatam-backend/src/lib/upload.js et submissionUpload.js).
+  # Dépendance déjà présente transitivement via `http`, déclarée ici
+  # explicitement pour rester stable si `http` change un jour sa propre
+  # dépendance.
+  http_parser: ^4.1.2
+
+  # Sélection d'un fichier PDF depuis le stockage du téléphone — utilisé par
+  # le professeur pour envoyer un nouveau document depuis l'app.
+  file_picker: ^12.1.2
+
+  # Prise de photo (appareil photo) ou sélection depuis la galerie — utilisé
+  # par l'élève pour envoyer sa copie à la correction IA. `imageQuality` est
+  # systématiquement précisé au moment de l'appel (voir ai_grading_service.dart)
+  # pour forcer un ré-encodage en JPEG, y compris sur iPhone (qui utilise HEIC
+  # par défaut, format que le serveur ne sait pas traiter).
+  image_picker: ^1.2.3
+
   # Gestion d'état simple (ChangeNotifier + Provider) — suffisant pour la
   # taille de cette application, pas besoin de Bloc/Riverpod pour l'instant.
   provider: ^6.1.1

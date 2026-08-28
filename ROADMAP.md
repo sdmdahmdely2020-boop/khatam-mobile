@@ -42,15 +42,16 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ **Mon compte** (lecture seule : nom, téléphone, email, rôle) + déconnexion
 - ⬜ Modification du profil (photo, changement de série)
 - ⬜ Mes documents achetés / téléchargements
-- ⬜ Correction IA (envoi de copie, note et retour détaillé)
+- ✅ **Correction IA** — envoi d'une copie (photo, PDF, ou texte tapé) pour un document où c'est activé, note sur 20 + retour détaillé (points forts/à travailler), historique complet (accessible depuis la fiche document et depuis "Mon compte")
 - ⬜ Note de l'application (étoiles)
 
 ## Phase 5 — Espace professeur (démarrée)
 
 - ✅ **"Mes documents"** — liste de ses propres documents (publiés + brouillons), bouton Publier/Dépublier
-- ⬜ Upload d'un NOUVEAU document (titre, matière, série, année, prix, fichier) — nécessite un nouveau paquet Flutter (sélection de fichier) + un envoi multipart
+- ✅ **Upload d'un NOUVEAU document** directement depuis l'app (titre, matière, série, année, type, prix, gratuit/pub/correction IA, fichier PDF) — bouton "Nouveau document" sur l'écran "Mes documents"
 - ⬜ Modifier le prix d'un document existant depuis l'app (possible côté serveur, pas encore construit côté app)
-- ⬜ Statistiques, portefeuille et demande de retrait
+- ✅ **Portefeuille et demande de retrait** — solde disponible, historique des ventes confirmées, demande de retrait Bankily/Masrivi/Sedad (traitement manuel par un administrateur, comme sur le site web)
+- ⬜ Statistiques avancées (vues, taux de conversion, etc.)
 - ⬜ Boost (mise en avant payante)
 - ⬜ Messagerie avec l'administrateur
 
@@ -74,7 +75,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 - **Gestion d'état** : `provider` + `ChangeNotifier` — simple et suffisant pour la taille de l'application.
 - **Navigation** : `Navigator` standard, avec un aiguillage par rôle (`HomeRouter`) après connexion.
-- **Réseau** : package `http` officiel — `ApiClient` supporte maintenant GET, POST, PATCH et DELETE (JSON uniquement, pas encore de multipart/upload de fichier).
+- **Réseau** : package `http` officiel — `ApiClient` supporte GET, POST, PATCH, DELETE et l'envoi `multipart/form-data` (upload de document PDF, envoi d'une copie pour la correction IA).
 - **Paiement** : le déblocage n'est JAMAIS automatique — confirmation manuelle par un administrateur, comme sur le site web.
 - **Favoris** : `GET /api/favorites` renvoie une forme de données différente de `GET /api/documents` (lignes brutes de la base, pas la forme enrichie) — un modèle séparé (`FavoriteDocument`) gère ça plutôt que de forcer la réutilisation de `DocumentItem`.
 - **Un seul appareil par compte** : contrainte disponible côté backend mais **désactivée pour l'instant**.

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../ai_grading/screens/ai_grading_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../models/document_item.dart';
 import '../services/catalog_service.dart';
@@ -85,14 +84,6 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => DocumentViewerScreen(documentId: doc.id, title: doc.title),
-      ),
-    );
-  }
-
-  void _openAiGrading(DocumentItem doc) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => AiGradingScreen(documentId: doc.id, documentTitle: doc.title),
       ),
     );
   }
@@ -285,46 +276,6 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
                       ],
                     ),
                   ),
-                  if (doc.aiGrading && doc.unlocked && _isStudent) ...[
-                    const SizedBox(height: 14),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppTheme.brandBlue.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: const [
-                              Icon(Icons.auto_awesome_outlined, color: AppTheme.brandBlue, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Correction IA disponible',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          const Text(
-                            "Envoyez votre copie et obtenez une note sur 20 avec un retour détaillé, généré à partir du corrigé officiel du professeur.",
-                            style: TextStyle(color: Colors.black54, fontSize: 12.5),
-                          ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 44,
-                            child: OutlinedButton.icon(
-                              onPressed: () => _openAiGrading(doc),
-                              icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-                              label: const Text('Faire corriger ma copie'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ],
               ),
             );

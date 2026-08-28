@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 import '../storage/local_storage.dart';
 
@@ -99,65 +98,6 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: await _headers(withAuth: withAuth),
     );
-    return _handle(response);
-  }
-
-  /// Envoi `multipart/form-data` — pour l'upload d'un document PDF
-  /// (professeur) ou d'une copie photo/PDF (correction IA élève). [fields]
-  /// est encodé en champs texte classiques (comme un formulaire HTML) ; si
-  /// [filePath] est fourni, il est joint sous le nom de champ [fileField]
-  /// avec [fileMimeType] (ex. `application/pdf`, `image/jpeg`) — nécessaire
-  /// ici car `http.MultipartFile.fromPath` devine parfois mal le type à
-  /// partir de l'extension seule, alors que le serveur (voir
-  /// `lib/upload.js`/`lib/submissionUpload.js`) rejette tout fichier dont le
-  /// `Content-Type` ne correspond pas exactement à ce qu'il attend.
-  Future<dynamic> multipartPost(
-    String path,
-    Map<String, String> fields, {
-    String? filePath,
-    List<int>? fileBytes,
-    String? fileName,
-    String? fileField,
-    String? fileMimeType,
-    bool withAuth = true,
-  }) async {
-    final uri = Uri.parse('$baseUrl$path');
-    final request = http.MultipartRequest('POST', uri);
-
-    final headers = await _headers(withAuth: withAuth);
-    headers.remove('Content-Type'); // http fixe lui-même le Content-Type multipart (avec sa "boundary")
-    request.headers.addAll(headers);
-
-    request.fields.addAll(fields);
-
-    if (fileField != null) {
-      MediaType? contentType;
-      if (fileMimeType != null && fileMimeType.contains('/')) {
-        final parts = fileMimeType.split('/');
-        contentType = MediaType(parts[0], parts[1]);
-      }
-      if (fileBytes != null) {
-        // Chemin utilisé sur le web (et qui fonctionne aussi partout
-        // ailleurs) : un navigateur ne donne JAMAIS de vrai chemin disque
-        // (PlatformFile.path / XFile.path restent inutilisables sur
-        // Flutter Web), donc on envoie directement les octets déjà chargés
-        // en mémoire par file_picker (withData: true) ou image_picker
-        // (readAsBytes()) plutôt que de s'appuyer sur un chemin de fichier.
-        request.files.add(http.MultipartFile.fromBytes(
-          fileField,
-          fileBytes,
-          filename: fileName ?? 'file',
-          contentType: contentType,
-        ));
-      } else if (filePath != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath(fileField, filePath, contentType: contentType),
-        );
-      }
-    }
-
-    final streamed = await request.send();
-    final response = await http.Response.fromStream(streamed);
     return _handle(response);
   }
 

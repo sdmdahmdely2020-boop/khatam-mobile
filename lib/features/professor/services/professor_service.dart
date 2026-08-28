@@ -36,4 +36,53 @@ class ProfessorService {
       apiOrigin: apiClient.origin,
     );
   }
+
+  /// Envoie un nouveau document (`POST /api/documents`, multipart/form-data,
+  /// champ fichier "file" — PDF uniquement, 25 Mo maximum côté serveur). Si
+  /// le compte professeur n'est pas encore approuvé, le document est bien
+  /// créé mais reste en brouillon (`professorPending: true` dans la réponse) —
+  /// c'est cette information qui permet à l'écran d'upload d'afficher un
+  /// message explicatif plutôt qu'une simple confirmation.
+  ///
+  /// [type] doit être l'une de : sujet, corrige, cours, exercices, video, blanc.
+  /// [serie] doit être l'une de : A, C, D.
+  Future<({DocumentItem document, bool professorPending})> createDocument({
+    required String title,
+    required String matiere,
+    required String serie,
+    required int annee,
+    required String type,
+    required num prix,
+    required bool free,
+    required bool adUnlock,
+    required bool aiGrading,
+    required List<int> fileBytes,
+    required String fileName,
+  }) async {
+    final data = await apiClient.multipartPost(
+      '/documents',
+      {
+        'title': title,
+        'matiere': matiere,
+        'serie': serie,
+        'annee': annee.toString(),
+        'type': type,
+        'prix': prix.toString(),
+        'free': free.toString(),
+        'adUnlock': adUnlock.toString(),
+        'aiGrading': aiGrading.toString(),
+      },
+      fileBytes: fileBytes,
+      fileName: fileName,
+      fileField: 'file',
+      fileMimeType: 'application/pdf',
+    );
+    return (
+      document: DocumentItem.fromJson(
+        data['document'] as Map<String, dynamic>,
+        apiOrigin: apiClient.origin,
+      ),
+      professorPending: data['professorPending'] as bool? ?? false,
+    );
+  }
 }

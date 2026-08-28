@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../ai_grading/screens/ai_history_screen.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../auth/state/auth_state.dart';
 
@@ -95,20 +94,6 @@ class AccountScreen extends StatelessWidget {
             _InfoRow(icon: Icons.phone_android_outlined, label: 'Téléphone', value: user?.phone ?? '—'),
             const Divider(height: 28),
             _InfoRow(icon: Icons.email_outlined, label: 'Email', value: user?.email ?? '—'),
-            if (user != null && !user.isProfessor) ...[
-              const Divider(height: 28),
-              OutlinedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const AiHistoryScreen()),
-                ),
-                icon: const Icon(Icons.auto_awesome_outlined, color: AppTheme.brandBlue),
-                label: const Text('Mes corrections IA', style: TextStyle(color: AppTheme.brandBlue)),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppTheme.brandBlue),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ],
             const SizedBox(height: 32),
             OutlinedButton.icon(
               onPressed: () => _logout(context),
