@@ -1,0 +1,43 @@
+name: khatam_app
+description: >
+  Application mobile Khatam — sujets et corrigés du Baccalauréat mauritanien,
+  publiés par de vrais professeurs. Connectée au backend khatam-backend déjà
+  en production.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Appels HTTP vers l'API Khatam (REST classique, pas de GraphQL côté
+  # backend) — package officiel Dart, minimal et bien connu.
+  http: ^1.1.0
+
+  # Gestion d'état simple (ChangeNotifier + Provider) — suffisant pour la
+  # taille de cette application, pas besoin de Bloc/Riverpod pour l'instant.
+  provider: ^6.1.1
+
+  # Stockage local léger : jeton de connexion, identifiant d'appareil
+  # (Khatam limite chaque compte à un seul appareil actif, voir le backend).
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Identité visuelle Khatam (lot 1 — logo), voir assets/branding/README.md
+  # pour le détail de chaque fichier et les prochaines étapes (icône
+  # d'application via flutter_launcher_icons, splash via
+  # flutter_native_splash, polices Cairo/Manrope via google_fonts).
+  assets:
+    - assets/branding/png/
+    - assets/branding/svg/

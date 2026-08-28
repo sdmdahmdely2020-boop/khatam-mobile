@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108" role="img" aria-label="Khatam — fond d'icône adaptative">
+  <defs>
+    <linearGradient id="khatamAdaptiveBg" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2569B8"/>
+      <stop offset="1" stop-color="#1B7A44"/>
+    </linearGradient>
+  </defs>
+  <rect width="108" height="108" fill="url(#khatamAdaptiveBg)"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" role="img" aria-label="Khatam — Documents du Baccalauréat">
+  <defs>
+    <linearGradient id="khatamSplashBg" x1="0" y1="0" x2="1080" y2="1920" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1E5FA8"/>
+      <stop offset="0.5" stop-color="#1B6F72"/>
+      <stop offset="1" stop-color="#146238"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#khatamSplashBg)"/>
+  <circle cx="540" cy="760" r="430" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.10"/>
+  <circle cx="540" cy="760" r="520" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.06"/>
+
+  <g transform="translate(340,540) scale(1.75)">
+    <circle cx="120" cy="120" r="100" fill="#FFFFFF" opacity="0.14"/>
+    <circle cx="120" cy="120" r="100" fill="none" stroke="#D3A039" stroke-width="3"/>
+    <circle cx="120" cy="120" r="92" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.55"/>
+    <path d="M 76 126 L 102 152 Q 132 118 164 90" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="540" y="1075" text-anchor="middle" font-family="'Cairo','Segoe UI',sans-serif" font-weight="800" font-size="96" fill="#FFFFFF">Khatam</text>
+  <text x="540" y="1122" text-anchor="middle" font-family="'Cairo','Noto Sans Arabic',sans-serif" font-weight="700" font-size="34" fill="#E9C77C" direction="rtl">ختم</text>
+  <text x="540" y="1180" text-anchor="middle" font-family="'Manrope','Segoe UI',sans-serif" font-weight="600" font-size="24" letter-spacing="4" fill="#FFFFFF" opacity="0.85">DOCUMENTS DU BACCALAURÉAT</text>
+</svg>

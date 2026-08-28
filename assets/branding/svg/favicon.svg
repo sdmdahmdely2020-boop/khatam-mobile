@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Khatam">
+  <defs>
+    <linearGradient id="khatamFaviconGradient" x1="10" y1="6" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2569B8"/>
+      <stop offset="1" stop-color="#1B7A44"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#khatamFaviconGradient)"/>
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#D3A039" stroke-width="2"/>
+  <path d="M 20 33.5 L 27 41 Q 34 33.5 44 23" fill="none" stroke="#FFFFFF" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

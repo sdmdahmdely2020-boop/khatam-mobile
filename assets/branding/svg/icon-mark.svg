@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Sceau Khatam">
+  <defs>
+    <linearGradient id="khatamSealGradient" x1="34" y1="20" x2="206" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2569B8"/>
+      <stop offset="1" stop-color="#1B7A44"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Anneau de dents (effet tampon officiel) -->
+  <g>
+    <line x1="120.00" y1="19.00" x2="120.00" y2="7.00" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="135.80" y1="20.24" x2="137.68" y2="8.39" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="151.21" y1="23.94" x2="154.92" y2="12.53" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="165.85" y1="30.01" x2="171.30" y2="19.32" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="179.37" y1="38.29" x2="186.42" y2="28.58" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="191.42" y1="48.58" x2="199.90" y2="40.10" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="201.71" y1="60.63" x2="211.42" y2="53.58" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="209.99" y1="74.15" x2="220.68" y2="68.70" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="216.06" y1="88.79" x2="227.47" y2="85.08" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="219.76" y1="104.20" x2="231.61" y2="102.32" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="221.00" y1="120.00" x2="233.00" y2="120.00" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="219.76" y1="135.80" x2="231.61" y2="137.68" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="216.06" y1="151.21" x2="227.47" y2="154.92" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="209.99" y1="165.85" x2="220.68" y2="171.30" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="201.71" y1="179.37" x2="211.42" y2="186.42" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="191.42" y1="191.42" x2="199.90" y2="199.90" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="179.37" y1="201.71" x2="186.42" y2="211.42" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="165.85" y1="209.99" x2="171.30" y2="220.68" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="151.21" y1="216.06" x2="154.92" y2="227.47" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="135.80" y1="219.76" x2="137.68" y2="231.61" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="120.00" y1="221.00" x2="120.00" y2="233.00" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="104.20" y1="219.76" x2="102.32" y2="231.61" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="88.79" y1="216.06" x2="85.08" y2="227.47" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="74.15" y1="209.99" x2="68.70" y2="220.68" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="60.63" y1="201.71" x2="53.58" y2="211.42" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="48.58" y1="191.42" x2="40.10" y2="199.90" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="38.29" y1="179.37" x2="28.58" y2="186.42" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="30.01" y1="165.85" x2="19.32" y2="171.30" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="23.94" y1="151.21" x2="12.53" y2="154.92" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="20.24" y1="135.80" x2="8.39" y2="137.68" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="19.00" y1="120.00" x2="7.00" y2="120.00" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="20.24" y1="104.20" x2="8.39" y2="102.32" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="23.94" y1="88.79" x2="12.53" y2="85.08" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="30.01" y1="74.15" x2="19.32" y2="68.70" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="38.29" y1="60.63" x2="28.58" y2="53.58" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="48.58" y1="48.58" x2="40.10" y2="40.10" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="60.63" y1="38.29" x2="53.58" y2="28.58" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="74.15" y1="30.01" x2="68.70" y2="19.32" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="88.79" y1="23.94" x2="85.08" y2="12.53" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+    <line x1="104.20" y1="20.24" x2="102.32" y2="8.39" stroke="#D3A039" stroke-width="3.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Disque principal -->
+  <circle cx="120" cy="120" r="100" fill="url(#khatamSealGradient)"/>
+  <circle cx="120" cy="120" r="100" fill="none" stroke="#D3A039" stroke-width="2.5" opacity="0.9"/>
+  <circle cx="120" cy="120" r="92" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.35"/>
+
+  <!-- Coche (le "sceau validé") — le trait long s'incurve comme le coin d'une page qui se tourne -->
+  <path d="M 76 126 L 102 152 Q 132 118 164 90" fill="none" stroke="#FFFFFF" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
