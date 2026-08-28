@@ -7,6 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/services/auth_service.dart';
 import 'features/auth/state/auth_state.dart';
+import 'features/onboarding/screens/onboarding_screen.dart';
 
 /// Adresse du backend Khatam déjà en production (voir khatam-backend sur
 /// Render — même API que le site web actuel). Aucune configuration
@@ -33,8 +34,33 @@ class KhatamApp extends StatelessWidget {
         title: 'Khatam',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
-        home: const LoginScreen(),
+        home: const _StartupGate(),
       ),
+    );
+  }
+}
+
+/// Décide, au tout premier lancement de l'app sur cet appareil, s'il faut
+/// montrer l'écran d'accueil (3 pages, [OnboardingScreen]) avant l'écran de
+/// connexion, ou directement l'écran de connexion (déjà vu une fois — voir
+/// [LocalStorage.getOnboardingSeen]). Un court écran de chargement s'affiche
+/// pendant la lecture du stockage local (quasi instantané en pratique).
+class _StartupGate extends StatelessWidget {
+  const _StartupGate();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: LocalStorage().getOnboardingSeen(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final alreadySeen = snapshot.data!;
+        return alreadySeen ? const LoginScreen() : const OnboardingScreen();
+      },
     );
   }
 }

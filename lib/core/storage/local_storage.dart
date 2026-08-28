@@ -11,6 +11,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalStorage {
   static const _tokenKey = 'khatam_auth_token';
   static const _deviceIdKey = 'khatam_device_id';
+  static const _onboardingSeenKey = 'khatam_onboarding_seen';
+
+  /// Vrai une fois que l'utilisateur a déjà vu (ou passé) l'écran d'accueil
+  /// (3 pages de présentation) — permet de ne l'afficher qu'une seule fois
+  /// par appareil, avant le premier écran de connexion.
+  Future<bool> getOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_onboardingSeenKey) ?? false;
+  }
+
+  Future<void> setOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_onboardingSeenKey, true);
+  }
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

@@ -1,73 +1,62 @@
-# Khatam — Nouvelle livraison : envoi de document, portefeuille, correction IA
-
-## Troisième correctif (`flutter analyze` a trouvé une nouvelle version du paquet `file_picker`)
-
-Ton `flutter pub get` a installé une version encore plus récente du paquet
-`file_picker` que celle utilisée pour préparer le correctif précédent — cette
-nouvelle version a retiré `.bytes` (accès direct aux octets) et le paramètre
-`withData`, et impose de lire le fichier avec `readAsBytes()` (une méthode
-qui prend un court instant, comme un petit chargement). Corrigé dans les deux
-mêmes fichiers (`upload_document_screen.dart`, `ai_grading_screen.dart`) —
-**utilise bien ce zip-ci**, c'est la version à jour. Aucune autre étape
-d'installation ne change, pas besoin de relancer `flutter pub get` (le
-`pubspec.yaml` n'a pas changé).
-
-## Deuxième correctif (le fichier ne se sélectionnait pas dans Chrome)
-
-Sur Chrome (web), le navigateur ne donne jamais le "chemin" réel d'un
-fichier choisi (`PlatformFile.path` restait toujours `null`), donc le
-fichier semblait bien choisi (son nom s'affichait) mais l'envoi échouait
-systématiquement. Corrigé en envoyant directement le contenu du fichier
-(ses octets) plutôt que son chemin — fonctionne maintenant aussi bien sur
-Chrome (test) que sur un vrai téléphone Android (usage final). **Utilise ce
-zip-ci**, il contient ce correctif en plus du précédent.
-
-## Correctif appliqué (`flutter analyze` a trouvé 2 vraies erreurs, corrigées)
-
-Le paquet `file_picker` (version installée par `flutter pub get`) utilise une
-API différente de celle utilisée dans la toute première version de ce zip —
-`FilePicker.platform.pickFiles(...)` n'existe plus, remplacé par
-`FilePicker.pickFile(...)` (méthode statique directe). Corrigé dans les deux
-fichiers concernés (`upload_document_screen.dart`, `ai_grading_screen.dart`)
-— **utilise bien ce zip-ci (pas une version précédente)**, il contient déjà
-le correctif. Aucune autre étape d'installation ne change.
+# Khatam — Nouvelle livraison : écran d'accueil (onboarding)
 
 ## Ce qui a été ajouté
 
-Trois nouvelles fonctionnalités dans l'app, comme demandé :
+L'écran d'accueil en 3 pages, avec les illustrations déjà livrées (lot 2) :
 
-1. **Envoi d'un document directement depuis l'app** (professeur) — avant, il fallait passer par le site web. Maintenant, sur l'écran "Mes documents", un bouton **"Nouveau document"** ouvre un formulaire complet (titre, matière, série, année, type, prix ou gratuit, déblocage par pub, correction IA activée ou non) avec le choix du fichier PDF depuis le téléphone.
+1. **"Bienvenue sur Khatam"** — présentation générale de l'app.
+2. **"Trouvez vos documents"** — filtrage par série, année, matière.
+3. **"Débloquez et réussissez"** — paiement Bankily/Masrivi/Sedad.
 
-2. **Portefeuille professeur** — une icône (portefeuille) en haut de l'écran "Mes documents" ouvre un nouvel écran avec le solde disponible, l'historique des ventes confirmées, et un bouton **"Demander un retrait"** (Bankily / Masrivi / Sedad — comme sur le site web, le virement réel reste fait à la main par un administrateur, ce n'est pas automatique).
+Il s'affiche **une seule fois**, à la toute première ouverture de l'app sur un
+téléphone donné — juste avant l'écran de connexion. Un bouton "Passer" en
+haut à droite permet de le sauter à tout moment, et le bouton en bas devient
+"Commencer" sur la dernière page. Une fois vu (ou passé), l'app se souvient
+que cet appareil l'a déjà vu et va directement à l'écran de connexion à
+chaque prochain lancement — pas besoin de le revoir à chaque fois.
 
-3. **Correction IA côté élève** — sur la fiche d'un document où la correction IA est activée par le professeur, une fois le document débloqué, un bloc **"Correction IA disponible"** apparaît avec un bouton "Faire corriger ma copie". L'élève peut prendre une photo, choisir une photo/un PDF depuis son téléphone, ou taper directement sa réponse — l'IA compare avec le corrigé officiel du professeur et renvoie une note sur 20 avec un avis détaillé (points forts / points à travailler). Un historique complet ("Mes corrections IA") est accessible depuis cette même fiche ou depuis "Mon compte".
+## Important : ce zip contient un NOUVEAU dossier `assets/` (pas seulement `lib/`)
 
-## Un point important : la permission caméra (à faire une seule fois)
+Contrairement aux livraisons précédentes (où il suffisait de remplacer
+`lib/`), celle-ci ajoute aussi les 3 images de l'écran d'accueil. Il faut
+donc, en plus de remplacer `lib/` comme d'habitude :
 
-Pour que "Prendre une photo" fonctionne sur Android, il faut ajouter une ligne dans un fichier qui n'est pas inclus dans ce zip (il est généré automatiquement par Flutter et propre à ton installation) :
+1. Ouvre ce zip et regarde s'il contient un dossier `assets/onboarding/` (avec
+   3 images `.png` dedans, et un sous-dossier `2.0x/`).
+2. Dans ton projet `khatam_app`, s'il existe déjà un dossier `assets/` à la
+   racine (à côté de `lib/`, `android/`, etc.) : copie simplement le
+   sous-dossier `onboarding/` de ce zip à l'intérieur (donc tu auras
+   `assets/onboarding/` en plus de ce qui existe déjà, comme
+   `assets/branding/`).
+3. S'il n'existe pas encore de dossier `assets/` à la racine de ton projet :
+   copie tout le dossier `assets/` de ce zip directement à la racine de ton
+   projet (au même niveau que `lib/`, pas à l'intérieur de `lib/`).
+4. Remplace aussi `pubspec.yaml` par celui de ce zip (une ligne a été ajoutée
+   pour déclarer ce nouveau dossier d'images).
 
-1. Ouvre le fichier `android/app/src/main/AndroidManifest.xml` dans ton projet.
-2. Juste avant la ligne `<application`, ajoute :
-   ```xml
-   <uses-permission android:name="android.permission.CAMERA"/>
-   ```
-3. Enregistre. Cette étape ne se fait qu'une seule fois — pas besoin de la refaire aux prochaines livraisons.
-
-Si tu ne veux pas gérer cette étape tout de suite, ce n'est pas bloquant : "Choisir une photo" (galerie) et "Choisir un PDF" fonctionnent sans cette permission, seul "Prendre une photo" (appareil photo) en a besoin.
+Si tu n'es pas sûr de ce que tu as déjà dans ton dossier `assets/`, envoie-moi
+une capture de l'explorateur de fichiers (ou de l'arborescence dans Android
+Studio) et je te dis exactement quoi faire.
 
 ## Comment installer cette livraison
 
-1. Dans `khatam_app`, supprime le dossier `lib` actuel (ou renomme-le en `lib_old4`).
-2. Copie le dossier `lib` de ce zip à la place.
-3. Remplace aussi `pubspec.yaml` par celui de ce zip (deux nouveaux paquets ont été ajoutés : `image_picker` pour les photos, et un petit ajustement pour l'envoi de fichiers).
-4. Ajoute la permission caméra dans `AndroidManifest.xml` (voir ci-dessus).
-5. Lance `flutter pub get`.
-6. **Important** : arrête complètement l'app (pas de hot reload), puis relance avec `flutter run`.
-7. Teste dans cet ordre :
-   - Connecte-toi en professeur → "Mes documents" → "Nouveau document" → remplis le formulaire, choisis un PDF, envoie.
-   - Sur "Mes documents", clique l'icône portefeuille en haut → vérifie que le solde et l'historique s'affichent, essaie "Demander un retrait".
-   - Connecte-toi en élève, ouvre un document dont la correction IA est activée (coche-la lors de l'envoi ci-dessus si besoin) et débloque-le → le bloc "Correction IA disponible" doit apparaître → essaie d'envoyer une photo ou un texte tapé.
+1. Dans `khatam_app`, supprime le dossier `lib` actuel (ou renomme-le), puis
+   copie le dossier `lib` de ce zip à la place.
+2. Ajoute le dossier `assets/onboarding/` (voir ci-dessus, étape importante).
+3. Remplace `pubspec.yaml` par celui de ce zip.
+4. Lance `flutter pub get`.
+5. Lance `flutter analyze` et envoie-moi une capture du résultat avant de
+   tester (ça permet de repérer tout de suite un souci éventuel).
+6. **Important** : arrête complètement l'app (pas de rechargement à chaud),
+   puis relance avec `flutter run`.
+7. Pour retester l'écran d'accueil plusieurs fois (puisqu'il ne s'affiche
+   qu'une seule fois normalement) : désinstalle complètement l'app du
+   téléphone/Chrome puis relance — ça efface la mémoire "déjà vu" et
+   l'écran d'accueil réapparaît.
 
 ## Si quelque chose ne marche pas
 
-Comme d'habitude : envoie-moi une capture de l'écran concerné, et si le terminal affiche une erreur, la trace complète depuis le tout début (pas seulement les dernières lignes) — c'est ce qui permet de trouver la vraie cause rapidement.
+Comme d'habitude : envoie-moi une capture de l'écran concerné, et si le
+terminal affiche une erreur, la trace complète depuis le tout début (pas
+seulement les dernières lignes) — c'est ce qui permet de trouver la vraie
+cause rapidement.

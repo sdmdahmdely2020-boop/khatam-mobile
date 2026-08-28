@@ -62,3 +62,7 @@ flutter:
   assets:
     - assets/branding/png/
     - assets/branding/svg/
+    # Illustrations de l'écran d'accueil (onboarding, lot 2) — 3 images, avec
+    # variantes haute résolution dans le sous-dossier 2.0x/ (Flutter les
+    # inclut automatiquement, pas besoin de les lister séparément).
+    - assets/onboarding/

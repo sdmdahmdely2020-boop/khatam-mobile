@@ -13,7 +13,8 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ Structure du projet (`core/` pour le transverse, `features/` par domaine métier)
 - ✅ Thème Material 3 — palette bleu (`#1E5FA8`) / vert (`#1E8A4C`), générée via `ColorScheme.fromSeed`
 - ✅ Client API générique (`core/api/api_client.dart`) — pointe vers `https://khatam-backend-i6zn.onrender.com/api`, GET/POST/PATCH/DELETE
-- ✅ Stockage local (jeton de connexion, identifiant d'appareil) — `core/storage/local_storage.dart`
+- ✅ Stockage local (jeton de connexion, identifiant d'appareil, écran d'accueil déjà vu) — `core/storage/local_storage.dart`
+- ✅ **Écran d'accueil (onboarding, 3 pages)** — illustrations lot 2, affiché une seule fois par appareil avant l'écran de connexion (`features/onboarding/`)
 - ⬜ Écran de démarrage (splash) — restaure la session si un jeton existe déjà localement
 
 ## Phase 1 — Authentification ✅ TERMINÉE
