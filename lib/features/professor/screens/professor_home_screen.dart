@@ -8,13 +8,14 @@ import '../../account/screens/account_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../../catalog/models/document_item.dart';
 import '../services/professor_service.dart';
+import 'stats_screen.dart';
 import 'upload_document_screen.dart';
 import 'wallet_screen.dart';
 
 /// Écran d'accueil professeur : "Mes documents", avec un bouton pour
 /// publier/dépublier chacun, un bouton flottant pour en envoyer un nouveau
-/// directement depuis l'app, et un accès au portefeuille (icône dans
-/// l'AppBar).
+/// directement depuis l'app, et un accès aux statistiques et au portefeuille
+/// (icônes dans l'AppBar).
 class ProfessorHomeScreen extends StatefulWidget {
   const ProfessorHomeScreen({super.key});
 
@@ -70,6 +71,13 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
         elevation: 0,
         foregroundColor: AppTheme.brandBlue,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart_outlined),
+            tooltip: 'Statistiques',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ProfessorStatsScreen()),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.account_balance_wallet_outlined),
             tooltip: 'Portefeuille',

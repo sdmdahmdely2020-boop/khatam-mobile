@@ -53,7 +53,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ **Upload d'un NOUVEAU document** directement depuis l'app (titre, matière, série, année, type, prix, gratuit/pub/correction IA, fichier PDF) — bouton "Nouveau document" sur l'écran "Mes documents"
 - ⬜ Modifier le prix d'un document existant depuis l'app (possible côté serveur, pas encore construit côté app)
 - ✅ **Portefeuille et demande de retrait** — solde disponible, historique des ventes confirmées, demande de retrait Bankily/Masrivi/Sedad (traitement manuel par un administrateur, comme sur le site web)
-- ⬜ Statistiques avancées (vues, taux de conversion, etc.)
+- ✅ **Statistiques avancées** — vues totales, ventes, revenu total, taux de conversion estimé, document le plus consulté, meilleure vente, tendance des revenus sur 6 mois, vues par matière (icône dans l'AppBar de "Mes documents")
 - ⬜ Boost (mise en avant payante)
 - ⬜ Messagerie avec l'administrateur
 
