@@ -152,9 +152,9 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  /// Redemande l'envoi du code par email. Erreur éventuelle affichée sans
-  /// changer [status] en `loading` (évite de désactiver tout le formulaire
-  /// pour un simple renvoi de code).
+  /// Redemande l'envoi du code par email (inscription). Erreur éventuelle
+  /// affichée sans changer [status] en `loading` (évite de désactiver tout
+  /// le formulaire pour un simple renvoi de code).
   Future<bool> resendCode({required String email}) async {
     errorMessage = null;
     errorCode = null;
@@ -167,6 +167,67 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (e) {
+      errorCode = 'NETWORK_ERROR';
+      errorMessage =
+          "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Demande un code de réinitialisation de mot de passe par email.
+  Future<bool> requestPasswordReset({required String email}) async {
+    status = AuthStatus.loading;
+    errorMessage = null;
+    errorCode = null;
+    notifyListeners();
+
+    try {
+      await authService.forgotPassword(email: email);
+      status = AuthStatus.success;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      status = AuthStatus.error;
+      errorCode = e.code;
+      errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      status = AuthStatus.error;
+      errorCode = 'NETWORK_ERROR';
+      errorMessage =
+          "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Vérifie le code de réinitialisation et applique le nouveau mot de
+  /// passe. Ne connecte pas automatiquement.
+  Future<bool> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    status = AuthStatus.loading;
+    errorMessage = null;
+    errorCode = null;
+    notifyListeners();
+
+    try {
+      await authService.resetPassword(email: email, code: code, newPassword: newPassword);
+      status = AuthStatus.success;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      status = AuthStatus.error;
+      errorCode = e.code;
+      errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      status = AuthStatus.error;
       errorCode = 'NETWORK_ERROR';
       errorMessage =
           "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";

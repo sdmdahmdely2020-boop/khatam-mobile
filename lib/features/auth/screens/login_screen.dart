@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../state/auth_state.dart';
+import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 import 'verify_email_screen.dart';
 
@@ -73,12 +74,6 @@ class _LoginScreenState extends State<LoginScreen>
         MaterialPageRoute(builder: (_) => VerifyEmailScreen(email: email)),
       );
     }
-  }
-
-  void _showComingSoon(String label) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$label — bientôt disponible.')),
-    );
   }
 
   @override
@@ -155,7 +150,13 @@ class _LoginScreenState extends State<LoginScreen>
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () => _showComingSoon('Mot de passe oublié'),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const ForgotPasswordScreen(),
+                              ),
+                            );
+                          },
                           child: const Text('Mot de passe oublié ?'),
                         ),
                       ),

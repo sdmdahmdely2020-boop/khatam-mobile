@@ -113,9 +113,32 @@ class AuthService {
     return AuthUser.fromJson(data['user'] as Map<String, dynamic>? ?? data);
   }
 
-  /// Redemande l'envoi du code de vérification par email.
+  /// Redemande l'envoi du code de vérification par email (inscription).
   Future<void> resendCode({required String email}) async {
     await apiClient.post('/auth/resend-code', {'email': email}, withAuth: false);
+  }
+
+  /// Demande l'envoi d'un code de réinitialisation par email. Répond
+  /// toujours `{sent: true}` côté serveur, que le compte existe ou non
+  /// (anti-énumération) — l'app ne peut donc jamais savoir si l'email
+  /// existe vraiment, ce qui est volontaire.
+  Future<void> forgotPassword({required String email}) async {
+    await apiClient.post('/auth/forgot-password', {'email': email}, withAuth: false);
+  }
+
+  /// Vérifie le code de réinitialisation et applique le nouveau mot de
+  /// passe. Ne connecte pas automatiquement — l'utilisateur se reconnecte
+  /// ensuite avec son nouveau mot de passe (même comportement que le site).
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    await apiClient.post('/auth/reset-password', {
+      'email': email,
+      'code': code,
+      'newPassword': newPassword,
+    }, withAuth: false);
   }
 
   Future<void> logout() async {
