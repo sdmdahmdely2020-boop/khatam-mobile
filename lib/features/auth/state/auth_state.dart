@@ -16,6 +16,11 @@ class AuthState extends ChangeNotifier {
 
   AuthState({required this.authService});
 
+  /// Raccourci vers le client HTTP déjà configuré par [authService] — évite
+  /// à tout écran hors du module "auth" (ex. le catalogue) de devoir
+  /// reconstruire son propre [ApiClient] ou de dépendre de `main.dart`.
+  ApiClient get apiClient => authService.apiClient;
+
   AuthStatus status = AuthStatus.idle;
   String? errorMessage;
   String? errorCode;
@@ -240,6 +245,19 @@ class AuthState extends ChangeNotifier {
     errorMessage = null;
     errorCode = null;
     if (status == AuthStatus.error) status = AuthStatus.idle;
+    notifyListeners();
+  }
+
+  /// Efface le jeton stocké localement et réinitialise l'état — l'écran
+  /// appelant doit ensuite naviguer vers l'écran de connexion en retirant
+  /// tout l'historique de navigation (voir [AccountScreen]).
+  Future<void> logout() async {
+    await authService.logout();
+    currentUser = null;
+    pendingVerifyEmail = null;
+    status = AuthStatus.idle;
+    errorMessage = null;
+    errorCode = null;
     notifyListeners();
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../home/home_router.dart';
 import '../state/auth_state.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
@@ -57,10 +58,10 @@ class _LoginScreenState extends State<LoginScreen>
     if (!mounted) return;
 
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Connexion réussie !')),
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const HomeRouter()),
+        (route) => false,
       );
-      // La suite (redirection vers le catalogue) arrivera avec la Phase 2.
       return;
     }
 

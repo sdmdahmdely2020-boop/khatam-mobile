@@ -2,8 +2,7 @@
 
 Application mobile native pour Khatam, connectée au backend existant
 (`khatam-backend`, déjà en production sur Render — même API que le site
-web actuel `khatam-site`, laissé intact comme prévu). Construite écran par
-écran, chaque écran étant soumis à validation avant de passer au suivant.
+web actuel `khatam-site`, laissé intact comme prévu).
 
 Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜ pas commencé
 
@@ -13,42 +12,45 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 - ✅ Structure du projet (`core/` pour le transverse, `features/` par domaine métier)
 - ✅ Thème Material 3 — palette bleu (`#1E5FA8`) / vert (`#1E8A4C`), générée via `ColorScheme.fromSeed`
-- ✅ Client API générique (`core/api/api_client.dart`) — pointe vers `https://khatam-backend-i6zn.onrender.com/api`
+- ✅ Client API générique (`core/api/api_client.dart`) — pointe vers `https://khatam-backend-i6zn.onrender.com/api`, GET/POST/PATCH/DELETE
 - ✅ Stockage local (jeton de connexion, identifiant d'appareil) — `core/storage/local_storage.dart`
 - ⬜ Écran de démarrage (splash) — restaure la session si un jeton existe déjà localement
 
-## Phase 1 — Authentification
+## Phase 1 — Authentification ✅ TERMINÉE
 
-- 🔄 **Écran de connexion** — Material 3, badge éducatif en dégradé, animation d'entrée, branché sur `POST /auth/login`, gère les 3 cas d'erreur du backend (identifiants invalides, email non vérifié, appareil déjà lié à un autre téléphone). **En attente de validation avant de continuer.**
-- ⬜ Écran d'inscription (élève / professeur, avec champs spécifiques professeur : établissement, matière, expérience)
-- ⬜ Écran de vérification email (code à 6 chiffres)
-- ⬜ Écran mot de passe oublié / réinitialisation
+- ✅ Connexion, inscription (élève/professeur), vérification email, mot de passe oublié — testés en conditions réelles
+- ✅ **Aiguillage par rôle** : après connexion/vérification, un professeur atterrit sur son espace ("Mes documents"), un élève sur le catalogue (`HomeRouter`)
+- Note : la limite "un seul appareil par compte" reste temporairement **désactivée** côté serveur — réactivable via une variable d'environnement sur Render, sans changement de code.
 
 ## Phase 2 — Contenu principal
 
-- ⬜ Catalogue de documents (liste + filtres Série / Année / Matière / Type)
-- ⬜ Fiche document (aperçu, prix, bouton débloquer/acheter)
-- ⬜ Profil public d'un professeur (bio, matières, documents, likes)
-- ⬜ Recherche
+- ✅ Catalogue de documents (liste + recherche par titre + filtre par Série)
+- ✅ Fiche document (aperçu, prix, bouton Ouvrir/Débloquer, cœur favoris pour un élève)
+- ⬜ Profil public d'un professeur (bio, matières, tous ses documents, likes)
+- ⬜ Filtres supplémentaires (Année, Matière, Type) — seule la Série est branchée pour l'instant
 
-## Phase 3 — Paiement et déblocage
+## Phase 3 — Paiement et déblocage ✅ (hors reçu photo)
 
-- ⬜ Écran d'achat (Bankily / Masrivi / Sedad — saisie du numéro de reçu)
-- ⬜ Déblocage par publicité
-- ⬜ Favoris
+- ✅ Visionneuse sécurisée (pages filigranées au nom du lecteur)
+- ✅ Achat Bankily / Masrivi / Sedad (numéro affiché, numéro de reçu, attente de confirmation admin)
+- ✅ Déblocage par publicité (simulation — pas encore de vrai SDK publicitaire)
+- ✅ **Favoris** — cœur sur la fiche document + écran "Mes favoris" (accessible depuis le catalogue)
+- ⬜ Envoi d'une capture d'écran du reçu de paiement (facultatif côté serveur, nécessite un nouveau paquet Flutter)
 
 ## Phase 4 — Espace élève
 
-- ⬜ Mon compte (profil, photo, changement de série)
+- ✅ **Mon compte** (lecture seule : nom, téléphone, email, rôle) + déconnexion
+- ⬜ Modification du profil (photo, changement de série)
 - ⬜ Mes documents achetés / téléchargements
 - ⬜ Correction IA (envoi de copie, note et retour détaillé)
 - ⬜ Note de l'application (étoiles)
 
-## Phase 5 — Espace professeur
+## Phase 5 — Espace professeur (démarrée)
 
-- ⬜ Tableau de bord (statistiques, documents publiés)
-- ⬜ Upload d'un document (titre, matière, série, année, prix, fichier)
-- ⬜ Portefeuille et demande de retrait
+- ✅ **"Mes documents"** — liste de ses propres documents (publiés + brouillons), bouton Publier/Dépublier
+- ⬜ Upload d'un NOUVEAU document (titre, matière, série, année, prix, fichier) — nécessite un nouveau paquet Flutter (sélection de fichier) + un envoi multipart
+- ⬜ Modifier le prix d'un document existant depuis l'app (possible côté serveur, pas encore construit côté app)
+- ⬜ Statistiques, portefeuille et demande de retrait
 - ⬜ Boost (mise en avant payante)
 - ⬜ Messagerie avec l'administrateur
 
@@ -70,7 +72,9 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 ## Notes techniques (décisions prises pour ce projet)
 
-- **Gestion d'état** : `provider` + `ChangeNotifier` — simple et suffisant pour la taille de l'application, pas de Bloc/Riverpod pour l'instant. Changeable plus tard si le besoin s'en fait sentir.
-- **Navigation** : `Navigator` standard pour l'instant (pas de `go_router`) — sera reconsidéré si l'app grandit et a besoin de liens profonds (deep links).
-- **Réseau** : package `http` officiel, appels REST classiques vers l'API déjà utilisée par le site web — aucun changement côté backend n'est nécessaire.
-- **Un seul appareil par compte** : contrainte déjà appliquée côté backend (voir `khatam-backend`) — l'app génère et conserve un identifiant d'appareil unique dès le premier lancement (`core/storage/local_storage.dart`).
+- **Gestion d'état** : `provider` + `ChangeNotifier` — simple et suffisant pour la taille de l'application.
+- **Navigation** : `Navigator` standard, avec un aiguillage par rôle (`HomeRouter`) après connexion.
+- **Réseau** : package `http` officiel — `ApiClient` supporte maintenant GET, POST, PATCH et DELETE (JSON uniquement, pas encore de multipart/upload de fichier).
+- **Paiement** : le déblocage n'est JAMAIS automatique — confirmation manuelle par un administrateur, comme sur le site web.
+- **Favoris** : `GET /api/favorites` renvoie une forme de données différente de `GET /api/documents` (lignes brutes de la base, pas la forme enrichie) — un modèle séparé (`FavoriteDocument`) gère ça plutôt que de forcer la réutilisation de `DocumentItem`.
+- **Un seul appareil par compte** : contrainte disponible côté backend mais **désactivée pour l'instant**.

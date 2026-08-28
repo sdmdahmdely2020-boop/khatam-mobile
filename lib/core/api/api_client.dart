@@ -33,6 +33,15 @@ class ApiClient {
 
   ApiClient({required this.baseUrl});
 
+  /// Racine du serveur, sans le suffixe `/api` de [baseUrl] — nécessaire
+  /// pour préfixer les chemins relatifs renvoyés par le backend dans le
+  /// JSON (ex. `previewUrl: "/api/documents/xxx/preview"`,
+  /// `photoUrl: "/uploads/photos/xxx.jpg"`) et en faire de vraies URLs
+  /// utilisables directement dans un `Image.network`.
+  String get origin => baseUrl.endsWith('/api')
+      ? baseUrl.substring(0, baseUrl.length - '/api'.length)
+      : baseUrl;
+
   Future<Map<String, String>> _headers({bool withAuth = true}) async {
     final headers = <String, String>{
       'Content-Type': 'application/json',
@@ -64,6 +73,30 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: await _headers(withAuth: withAuth),
       body: jsonEncode(body),
+    );
+    return _handle(response);
+  }
+
+  /// Pour les routes serveur déclarées en `router.patch(...)` (ex. modifier
+  /// un document existant) — un simple `post` échouerait avec 404, Express
+  /// n'y répondant qu'à la méthode HTTP exacte déclarée.
+  Future<dynamic> patch(
+    String path,
+    Map<String, dynamic> body, {
+    bool withAuth = true,
+  }) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl$path'),
+      headers: await _headers(withAuth: withAuth),
+      body: jsonEncode(body),
+    );
+    return _handle(response);
+  }
+
+  Future<dynamic> delete(String path, {bool withAuth = true}) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl$path'),
+      headers: await _headers(withAuth: withAuth),
     );
     return _handle(response);
   }

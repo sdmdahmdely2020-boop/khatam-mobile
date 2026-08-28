@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../home/home_router.dart';
 import '../state/auth_state.dart';
 
 /// Écran de vérification par email (Phase 1, écran 3/4) : code à 6 chiffres
@@ -264,8 +265,11 @@ class _SuccessView extends StatelessWidget {
         ),
         const SizedBox(height: 28),
         ElevatedButton(
-          onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-          child: const Text('Aller à la connexion'),
+          onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const HomeRouter()),
+            (route) => false,
+          ),
+          child: const Text('Continuer'),
         ),
       ],
     );
