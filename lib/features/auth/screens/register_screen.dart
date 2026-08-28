@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../services/auth_service.dart';
 import '../state/auth_state.dart';
+import 'verify_email_screen.dart';
 
 enum _Role { student, professor }
 
@@ -303,7 +304,7 @@ class _StudentFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: serie,
+      initialValue: serie,
       decoration: const InputDecoration(
         labelText: 'Série',
         prefixIcon: Icon(Icons.school_outlined),
@@ -416,6 +417,17 @@ class _SuccessView extends StatelessWidget {
         ),
         const SizedBox(height: 28),
         ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => VerifyEmailScreen(email: result.email),
+              ),
+            );
+          },
+          child: const Text('Vérifier mon email'),
+        ),
+        const SizedBox(height: 8),
+        TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Retour à la connexion'),
         ),

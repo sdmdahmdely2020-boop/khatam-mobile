@@ -5,7 +5,7 @@ class AuthUser {
   final String fullName;
   final String phone;
   final String email;
-  final String role; // 'student' | 'professor'
+  final String role; // 'STUDENT' | 'PROFESSOR' (le serveur les stocke en majuscules)
 
   AuthUser({
     required this.id,
@@ -21,9 +21,9 @@ class AuthUser {
       fullName: (json['fullName'] ?? json['name'] ?? '').toString(),
       phone: (json['phone'] ?? '').toString(),
       email: (json['email'] ?? '').toString(),
-      role: (json['role'] ?? 'student').toString(),
+      role: (json['role'] ?? 'STUDENT').toString(),
     );
   }
 
-  bool get isProfessor => role == 'professor';
+  bool get isProfessor => role.toUpperCase() == 'PROFESSOR';
 }

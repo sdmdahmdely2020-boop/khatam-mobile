@@ -17,14 +17,19 @@ class AuthService {
 
   AuthService({required this.apiClient, required this.storage});
 
-  /// Connexion. Les erreurs backend possibles (propagées telles quelles à
-  /// l'appelant via [ApiException.code]) : `INVALID_CREDENTIALS`,
-  /// `EMAIL_NOT_VERIFIED` (avec l'email dans `body['email']`),
-  /// `DEVICE_MISMATCH`.
+  /// Connexion. Le serveur exige `deviceId` DANS LE CORPS de la requête (pas
+  /// seulement l'en-tête `X-Device-Id` déjà ajouté par [ApiClient]) — c'est
+  /// ce champ qui lie l'appareil au compte la toute première fois.
+  ///
+  /// Erreurs backend possibles (propagées telles quelles à l'appelant via
+  /// [ApiException.code]) : `INVALID_CREDENTIALS`, `EMAIL_NOT_VERIFIED`
+  /// (avec l'email dans `body['email']`), `DEVICE_MISMATCH`.
   Future<AuthUser> login({required String phone, required String password}) async {
+    final deviceId = await storage.getOrCreateDeviceId();
+
     final data = await apiClient.post(
       '/auth/login',
-      {'phone': phone, 'password': password},
+      {'phone': phone, 'password': password, 'deviceId': deviceId},
       withAuth: false,
     );
 
@@ -36,7 +41,8 @@ class AuthService {
     return AuthUser.fromJson(data['user'] as Map<String, dynamic>? ?? data);
   }
 
-  /// Inscription élève.
+  /// Inscription élève. `role` doit être la valeur exacte attendue par le
+  /// serveur : `STUDENT` (majuscules).
   Future<RegisterResult> registerStudent({
     required String fullName,
     required String phone,
@@ -45,7 +51,7 @@ class AuthService {
     required String serie,
   }) {
     return _register({
-      'role': 'student',
+      'role': 'STUDENT',
       'fullName': fullName,
       'phone': phone,
       'email': email,
@@ -54,7 +60,8 @@ class AuthService {
     }, email);
   }
 
-  /// Inscription professeur.
+  /// Inscription professeur. `role` doit être la valeur exacte attendue par
+  /// le serveur : `PROFESSOR` (majuscules).
   Future<RegisterResult> registerProfessor({
     required String fullName,
     required String phone,
@@ -65,7 +72,7 @@ class AuthService {
     required int experienceYears,
   }) {
     return _register({
-      'role': 'professor',
+      'role': 'PROFESSOR',
       'fullName': fullName,
       'phone': phone,
       'email': email,
@@ -83,6 +90,32 @@ class AuthService {
           "Compte créé ! Vérifiez votre email pour l'activer.",
       email: email,
     );
+  }
+
+  /// Vérifie le code à 6 chiffres reçu par email. Le serveur exige aussi
+  /// `deviceId` dans le corps ici (même raison que pour /login : c'est ce
+  /// qui lie l'appareil au compte). En cas de succès, active le compte,
+  /// lie l'appareil, et renvoie un jeton de connexion.
+  Future<AuthUser> verifyEmail({required String email, required String code}) async {
+    final deviceId = await storage.getOrCreateDeviceId();
+
+    final data = await apiClient.post(
+      '/auth/verify-email',
+      {'email': email, 'code': code, 'deviceId': deviceId},
+      withAuth: false,
+    );
+
+    final token = data['token'] as String?;
+    if (token != null && token.isNotEmpty) {
+      await storage.setToken(token);
+    }
+
+    return AuthUser.fromJson(data['user'] as Map<String, dynamic>? ?? data);
+  }
+
+  /// Redemande l'envoi du code de vérification par email.
+  Future<void> resendCode({required String email}) async {
+    await apiClient.post('/auth/resend-code', {'email': email}, withAuth: false);
   }
 
   Future<void> logout() async {

@@ -21,6 +21,11 @@ class AuthState extends ChangeNotifier {
   String? errorCode;
   AuthUser? currentUser;
 
+  /// Rempli automatiquement quand une tentative de connexion échoue avec
+  /// `EMAIL_NOT_VERIFIED` — permet à l'écran de connexion de rediriger
+  /// directement vers l'écran de vérification sans redemander l'email.
+  String? pendingVerifyEmail;
+
   Future<bool> login({required String phone, required String password}) async {
     status = AuthStatus.loading;
     errorMessage = null;
@@ -36,6 +41,9 @@ class AuthState extends ChangeNotifier {
       status = AuthStatus.error;
       errorCode = e.code;
       errorMessage = e.message;
+      if (e.code == 'EMAIL_NOT_VERIFIED') {
+        pendingVerifyEmail = (e.body?['email'] as String?) ?? phone;
+      }
       notifyListeners();
       return false;
     } catch (e) {
@@ -110,6 +118,60 @@ class AuthState extends ChangeNotifier {
           "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";
       notifyListeners();
       return null;
+    }
+  }
+
+  /// Vérifie le code à 6 chiffres reçu par email. En cas de succès,
+  /// [currentUser] est rempli (le backend renvoie un jeton avec la
+  /// vérification, donc le compte est immédiatement connecté).
+  Future<bool> verifyEmail({required String email, required String code}) async {
+    status = AuthStatus.loading;
+    errorMessage = null;
+    errorCode = null;
+    notifyListeners();
+
+    try {
+      currentUser = await authService.verifyEmail(email: email, code: code);
+      status = AuthStatus.success;
+      pendingVerifyEmail = null;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      status = AuthStatus.error;
+      errorCode = e.code;
+      errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      status = AuthStatus.error;
+      errorCode = 'NETWORK_ERROR';
+      errorMessage =
+          "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Redemande l'envoi du code par email. Erreur éventuelle affichée sans
+  /// changer [status] en `loading` (évite de désactiver tout le formulaire
+  /// pour un simple renvoi de code).
+  Future<bool> resendCode({required String email}) async {
+    errorMessage = null;
+    errorCode = null;
+    try {
+      await authService.resendCode(email: email);
+      return true;
+    } on ApiException catch (e) {
+      errorCode = e.code;
+      errorMessage = e.message;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      errorCode = 'NETWORK_ERROR';
+      errorMessage =
+          "Impossible de contacter le serveur. Vérifie ta connexion internet et réessaie.";
+      notifyListeners();
+      return false;
     }
   }
 

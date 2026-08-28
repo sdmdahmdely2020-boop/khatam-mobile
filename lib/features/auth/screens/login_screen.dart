@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../state/auth_state.dart';
 import 'register_screen.dart';
+import 'verify_email_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -59,6 +60,18 @@ class _LoginScreenState extends State<LoginScreen>
         const SnackBar(content: Text('Connexion réussie !')),
       );
       // La suite (redirection vers le catalogue) arrivera avec la Phase 2.
+      return;
+    }
+
+    // Compte pas encore vérifié : direction l'écran de vérification, sans
+    // redemander l'email (le serveur nous l'a renvoyé).
+    if (authState.errorCode == 'EMAIL_NOT_VERIFIED' &&
+        authState.pendingVerifyEmail != null) {
+      final email = authState.pendingVerifyEmail!;
+      authState.resetError();
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => VerifyEmailScreen(email: email)),
+      );
     }
   }
 
@@ -171,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 MaterialPageRoute(builder: (_) => const RegisterScreen()),
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               'Créer un compte',
                               style: TextStyle(
                                 color: AppTheme.brandGreen,
