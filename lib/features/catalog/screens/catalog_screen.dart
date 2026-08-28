@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../models/document_item.dart';
@@ -243,9 +244,18 @@ class _DocumentCard extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      '${document.matiere} · Série ${document.serie} · ${document.annee}',
-                      style: const TextStyle(color: Colors.black54, fontSize: 12.5),
+                    Row(
+                      children: [
+                        SubjectIcon(matiere: document.matiere, size: 16),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            '${document.matiere} · Série ${document.serie} · ${document.annee}',
+                            style: const TextStyle(color: Colors.black54, fontSize: 12.5),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 2),
                     Text(

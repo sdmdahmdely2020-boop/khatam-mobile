@@ -1,62 +1,49 @@
-# Khatam — Nouvelle livraison : écran d'accueil (onboarding)
+# Khatam — Nouvelle livraison : icônes de matière
 
 ## Ce qui a été ajouté
 
-L'écran d'accueil en 3 pages, avec les illustrations déjà livrées (lot 2) :
+Une petite icône ronde (colorée) apparaît maintenant à côté de chaque matière
+partout où elle est affichée : le catalogue, tes favoris, "Mes documents"
+(côté professeur), et la fiche détaillée d'un document. Ce sont les mêmes
+icônes déjà livrées (lot 3) : Mathématiques, Physique, Chimie, SVT, Arabe,
+Français, Anglais, Philosophie, Histoire-Géographie.
 
-1. **"Bienvenue sur Khatam"** — présentation générale de l'app.
-2. **"Trouvez vos documents"** — filtrage par série, année, matière.
-3. **"Débloquez et réussissez"** — paiement Bankily/Masrivi/Sedad.
+Comme le champ "matière" est écrit librement par le professeur au moment de
+l'envoi du document (pas une liste figée), la bonne icône est retrouvée
+automatiquement en reconnaissant des mots-clés dans le texte tapé (par
+exemple "Maths", "Mathématiques" ou "math" affichent tous la même icône) —
+insensible aux accents et aux majuscules/minuscules. Si aucune matière
+connue n'est reconnue dans le texte, une icône neutre (petit livre) s'affiche
+à la place, pour ne jamais rien casser.
 
-Il s'affiche **une seule fois**, à la toute première ouverture de l'app sur un
-téléphone donné — juste avant l'écran de connexion. Un bouton "Passer" en
-haut à droite permet de le sauter à tout moment, et le bouton en bas devient
-"Commencer" sur la dernière page. Une fois vu (ou passé), l'app se souvient
-que cet appareil l'a déjà vu et va directement à l'écran de connexion à
-chaque prochain lancement — pas besoin de le revoir à chaque fois.
+## Ce zip contient aussi un dossier `assets/` (comme la livraison précédente)
 
-## Important : ce zip contient un NOUVEAU dossier `assets/` (pas seulement `lib/`)
-
-Contrairement aux livraisons précédentes (où il suffisait de remplacer
-`lib/`), celle-ci ajoute aussi les 3 images de l'écran d'accueil. Il faut
-donc, en plus de remplacer `lib/` comme d'habitude :
-
-1. Ouvre ce zip et regarde s'il contient un dossier `assets/onboarding/` (avec
-   3 images `.png` dedans, et un sous-dossier `2.0x/`).
-2. Dans ton projet `khatam_app`, s'il existe déjà un dossier `assets/` à la
-   racine (à côté de `lib/`, `android/`, etc.) : copie simplement le
-   sous-dossier `onboarding/` de ce zip à l'intérieur (donc tu auras
-   `assets/onboarding/` en plus de ce qui existe déjà, comme
-   `assets/branding/`).
-3. S'il n'existe pas encore de dossier `assets/` à la racine de ton projet :
-   copie tout le dossier `assets/` de ce zip directement à la racine de ton
-   projet (au même niveau que `lib/`, pas à l'intérieur de `lib/`).
-4. Remplace aussi `pubspec.yaml` par celui de ce zip (une ligne a été ajoutée
-   pour déclarer ce nouveau dossier d'images).
-
-Si tu n'es pas sûr de ce que tu as déjà dans ton dossier `assets/`, envoie-moi
-une capture de l'explorateur de fichiers (ou de l'arborescence dans Android
-Studio) et je te dis exactement quoi faire.
+Même remarque que pour l'écran d'accueil : en plus de `lib/` et
+`pubspec.yaml`, il y a un dossier `assets/subjects/` à copier à la racine de
+ton projet (à côté de `lib/`, pas dedans) — ou à fusionner s'il existe déjà
+un dossier `assets/` chez toi. Tu peux faire comme la dernière fois : tout
+sélectionner dans le zip extrait et coller directement dans ton dossier
+`khatam_app`, en choisissant "Remplacer les fichiers/dossiers dans la
+destination" quand Windows te le demande.
 
 ## Comment installer cette livraison
 
-1. Dans `khatam_app`, supprime le dossier `lib` actuel (ou renomme-le), puis
-   copie le dossier `lib` de ce zip à la place.
-2. Ajoute le dossier `assets/onboarding/` (voir ci-dessus, étape importante).
-3. Remplace `pubspec.yaml` par celui de ce zip.
-4. Lance `flutter pub get`.
-5. Lance `flutter analyze` et envoie-moi une capture du résultat avant de
-   tester (ça permet de repérer tout de suite un souci éventuel).
-6. **Important** : arrête complètement l'app (pas de rechargement à chaud),
-   puis relance avec `flutter run`.
-7. Pour retester l'écran d'accueil plusieurs fois (puisqu'il ne s'affiche
-   qu'une seule fois normalement) : désinstalle complètement l'app du
-   téléphone/Chrome puis relance — ça efface la mémoire "déjà vu" et
-   l'écran d'accueil réapparaît.
+1. Extrais ce zip.
+2. Sélectionne tout son contenu (`lib`, `pubspec.yaml`, `assets`,
+   `INSTRUCTIONS.md`, `ROADMAP.md`) et colle-le dans ton dossier
+   `khatam_app`, en remplaçant quand Windows le demande.
+3. Ouvre un terminal dans le projet, lance :
+   ```
+   flutter pub get
+   flutter analyze
+   ```
+4. Envoie-moi une capture du résultat de `flutter analyze`.
+5. Si c'est propre, arrête complètement l'app et relance avec `flutter run`.
+6. Va dans le catalogue (ou "Mes documents" si tu es connecté en professeur)
+   : chaque document doit maintenant afficher une petite icône colorée à
+   côté du nom de la matière.
 
 ## Si quelque chose ne marche pas
 
-Comme d'habitude : envoie-moi une capture de l'écran concerné, et si le
-terminal affiche une erreur, la trace complète depuis le tout début (pas
-seulement les dernières lignes) — c'est ce qui permet de trouver la vraie
-cause rapidement.
+Comme d'habitude : une capture de l'écran concerné, et si le terminal
+affiche une erreur, la trace complète depuis le tout début.

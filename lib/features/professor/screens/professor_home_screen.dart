@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../../catalog/models/document_item.dart';
@@ -176,9 +177,18 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
                             ],
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            '${doc.matiere} · Série ${doc.serie} · ${doc.annee} · ${doc.typeLabel}',
-                            style: const TextStyle(color: Colors.black54, fontSize: 12.5),
+                          Row(
+                            children: [
+                              SubjectIcon(matiere: doc.matiere, size: 16),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  '${doc.matiere} · Série ${doc.serie} · ${doc.annee} · ${doc.typeLabel}',
+                                  style: const TextStyle(color: Colors.black54, fontSize: 12.5),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 4),
                           Text(

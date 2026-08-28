@@ -66,3 +66,6 @@ flutter:
     # variantes haute résolution dans le sous-dossier 2.0x/ (Flutter les
     # inclut automatiquement, pas besoin de les lister séparément).
     - assets/onboarding/
+    # Icônes de matière (lot 3) — une par matière du Bac, utilisées dans le
+    # catalogue/fiche document via SubjectIcon (core/theme/subject_icons.dart).
+    - assets/subjects/

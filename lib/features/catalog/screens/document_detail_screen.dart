@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/subject_icons.dart';
 import '../../ai_grading/screens/ai_grading_screen.dart';
 import '../../auth/state/auth_state.dart';
 import '../models/document_item.dart';
@@ -201,7 +202,11 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      _InfoChip(icon: Icons.menu_book_outlined, label: doc.matiere),
+                      _InfoChip(
+                        icon: Icons.menu_book_outlined,
+                        label: doc.matiere,
+                        leadingWidget: SubjectIcon(matiere: doc.matiere, size: 16),
+                      ),
                       _InfoChip(icon: Icons.workspace_premium_outlined, label: 'Série ${doc.serie}'),
                       _InfoChip(icon: Icons.calendar_today_outlined, label: '${doc.annee}'),
                       _InfoChip(icon: Icons.description_outlined, label: doc.typeLabel),
@@ -340,7 +345,17 @@ class _InfoChip extends StatelessWidget {
   final String label;
   final Color color;
 
-  const _InfoChip({required this.icon, required this.label, this.color = AppTheme.brandBlue});
+  /// Widget optionnel affiché à la place de l'icône Material par défaut —
+  /// utilisé pour la puce "matière" (icône de matière du lot 3, voir
+  /// `SubjectIcon`) plutôt que le pictogramme générique `icon`.
+  final Widget? leadingWidget;
+
+  const _InfoChip({
+    required this.icon,
+    required this.label,
+    this.color = AppTheme.brandBlue,
+    this.leadingWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -353,7 +368,7 @@ class _InfoChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          leadingWidget ?? Icon(icon, size: 14, color: color),
           const SizedBox(width: 5),
           Text(label, style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w600)),
         ],

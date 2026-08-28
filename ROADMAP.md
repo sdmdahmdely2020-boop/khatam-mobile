@@ -27,6 +27,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 - ✅ Catalogue de documents (liste + recherche par titre + filtre par Série)
 - ✅ Fiche document (aperçu, prix, bouton Ouvrir/Débloquer, cœur favoris pour un élève)
+- ✅ **Icônes de matière** (lot 3) sur les cartes de documents (catalogue, favoris, "Mes documents" professeur) et sur la fiche document
 - ⬜ Profil public d'un professeur (bio, matières, tous ses documents, likes)
 - ⬜ Filtres supplémentaires (Année, Matière, Type) — seule la Série est branchée pour l'instant
 

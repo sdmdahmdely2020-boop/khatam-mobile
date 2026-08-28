@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/subject_icons.dart';
 import '../../auth/state/auth_state.dart';
 import '../models/favorite_document.dart';
 import '../services/favorites_service.dart';
@@ -137,9 +138,18 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14.5),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
-                                    '${doc.matiere} · Série ${doc.serie} · ${doc.annee}',
-                                    style: const TextStyle(color: Colors.black54, fontSize: 12),
+                                  Row(
+                                    children: [
+                                      SubjectIcon(matiere: doc.matiere, size: 15),
+                                      const SizedBox(width: 5),
+                                      Expanded(
+                                        child: Text(
+                                          '${doc.matiere} · Série ${doc.serie} · ${doc.annee}',
+                                          style: const TextStyle(color: Colors.black54, fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
