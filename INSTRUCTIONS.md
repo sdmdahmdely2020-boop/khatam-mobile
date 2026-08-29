@@ -1,60 +1,63 @@
-# Khatam — Icône de l'application
+# Khatam — Bandeau publicitaire (publicités locales) dans l'app mobile
 
 ## Ce qui a été ajouté
 
-Le vrai logo Khatam comme icône de l'app (au lieu de l'icône Flutter par
-défaut) — sur l'écran d'accueil du téléphone, dans les paramètres, partout où
-Android affiche l'icône de l'app. Utilise le paquet `flutter_launcher_icons`,
-qui génère automatiquement toutes les tailles nécessaires (et l'icône
-"adaptative" moderne, qui s'adapte à la forme imposée par le launcher :
-rond, carré arrondi, etc.) à partir des images déjà présentes dans la charte
-graphique (lot 1).
+Le carrousel de publicités locales (annonceurs mauritaniens, celui que tu
+gères déjà depuis `admin.html`) — jusqu'ici, il existait uniquement sur le
+site web. Il s'affiche maintenant aussi dans l'application mobile, à deux
+endroits, exactement comme sur le site :
 
-## Ce zip contient un dossier `assets/` en plus de `lib/`
+- En haut du **catalogue** (élève), juste au-dessus de la liste des
+  documents.
+- En haut de **"Mes documents"** (professeur), juste en dessous de la barre
+  du haut.
 
-Comme pour l'écran d'accueil et les icônes de matière : ce zip ajoute des
-fichiers dans `assets/branding/png/` (3 nouvelles images). Même méthode que
-les fois précédentes — sélectionne tout le contenu du zip extrait et
-colle-le dans ton dossier `khatam_app`, en choisissant "Remplacer" quand
-Windows le demande.
+Il défile automatiquement toutes les 6 secondes s'il y a plusieurs annonces
+actives, avec des petits points en dessous pour indiquer laquelle est
+affichée. Toucher une annonce ouvre son lien dans le navigateur du
+téléphone.
 
-## Étape supplémentaire, uniquement pour cette livraison
+## Pourquoi tu ne le voyais pas jusqu'ici dans l'app
 
-Contrairement aux livraisons précédentes, il y a une commande de plus à
-lancer une seule fois pour que l'icône soit vraiment créée (Flutter ne le
-fait pas tout seul, il faut le demander explicitement) :
+Ce n'était pas un bug : ce bandeau n'existait tout simplement pas encore
+dans le code de l'application (seulement sur le site web). C'est corrigé
+avec cette livraison.
 
-1. Colle le contenu du zip dans ton projet (voir ci-dessus).
-2. Dans le terminal du projet, lance dans l'ordre :
+**Une fois installé, le bandeau restera quand même invisible tant que tu
+n'auras créé aucune annonce active** (via `admin.html`, comme pour le site)
+— c'est le comportement normal, pas une erreur. Dès qu'une annonce existe
+pour la zone `catalog` ou `dashboard`, elle apparaît automatiquement, sans
+rien à changer côté app.
+
+## Ce zip contient une nouvelle dépendance (`pubspec.yaml`)
+
+Contrairement aux dernières livraisons (statistiques, icône), celle-ci
+ajoute un nouveau paquet : `url_launcher` (pour ouvrir le lien d'une
+annonce). Il faut donc bien relancer `flutter pub get` après avoir collé
+le contenu du zip — aucun nouveau dossier `assets/` cette fois, juste
+`lib/` et `pubspec.yaml`.
+
+1. Colle le contenu du zip dans ton projet (méthode habituelle : tout
+   sélectionner dans le zip extrait, coller dans ton dossier `khatam_app`,
+   "Remplacer" quand Windows le demande).
+2. Dans le terminal du projet :
    ```
    flutter pub get
-   dart run flutter_launcher_icons
+   flutter analyze
    ```
-   La deuxième commande affiche plusieurs lignes "Creating..." — c'est normal,
-   c'est elle qui fabrique toutes les tailles d'icône nécessaires. Ça prend
-   quelques secondes.
-3. Lance `flutter analyze` et envoie-moi une capture du résultat.
-4. Reconstruis l'app :
-   ```
-   flutter build apk --release
-   ```
-5. Renvoie `app-release.apk` (même chemin qu'avant :
-   `build\app\outputs\flutter-apk\app-release.apk`) vers ta tablette et
-   réinstalle par-dessus. La nouvelle icône doit apparaître sur l'écran
-   d'accueil dès l'installation terminée.
+3. Envoie-moi une capture du résultat de `flutter analyze`.
+4. Reconstruis l'app (`flutter build apk --release` si tu testes sur ta
+   tablette, ou redémarre complètement l'app si tu testes sur Chrome).
+5. Vérifie que le bandeau apparaît bien en haut du catalogue ET en haut de
+   "Mes documents" (professeur) — vide au départ tant qu'aucune annonce
+   n'est créée, c'est normal (voir ci-dessus).
 
-## Rappel : le correctif de connexion internet (à faire si pas encore fait)
+## Pour voir une vraie publicité s'afficher
 
-Si ce n'est pas déjà fait, ajoute aussi cette ligne dans
-`android\app\src\main\AndroidManifest.xml`, juste après la ligne de la
-permission caméra :
-```xml
-<uses-permission android:name="android.permission.INTERNET"/>
-```
-Sans elle, l'app ne peut pas du tout contacter le serveur (message "Impossible
-de contacter le serveur"). Ce correctif est indépendant de la livraison de
-l'icône — les deux peuvent être faits en même temps avant de reconstruire
-l'APK.
+Va dans `admin.html` (site web), section publicités, et crée une annonce
+avec une zone `catalog` ou `dashboard` (les deux si tu veux qu'elle
+apparaisse aux deux endroits). Elle doit apparaître dans l'app dans les
+secondes qui suivent (rafraîchis l'écran si besoin).
 
 ## Si quelque chose ne marche pas
 

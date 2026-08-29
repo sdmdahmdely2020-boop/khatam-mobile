@@ -5,6 +5,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
+import '../../ads/widgets/ad_carousel.dart';
 import '../../auth/state/auth_state.dart';
 import '../../catalog/models/document_item.dart';
 import '../services/professor_service.dart';
@@ -14,7 +15,8 @@ import 'wallet_screen.dart';
 
 /// Écran d'accueil professeur : "Mes documents", avec un bouton pour
 /// publier/dépublier chacun, un bouton flottant pour en envoyer un nouveau
-/// directement depuis l'app, et un accès aux statistiques et au portefeuille
+/// directement depuis l'app, un bandeau publicitaire (zone `dashboard`,
+/// voir features/ads/), et un accès aux statistiques et au portefeuille
 /// (icônes dans l'AppBar).
 class ProfessorHomeScreen extends StatefulWidget {
   const ProfessorHomeScreen({super.key});
@@ -107,7 +109,18 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
         label: const Text('Nouveau document'),
       ),
       body: SafeArea(
-        child: FutureBuilder<List<DocumentItem>>(
+        child: Column(
+          children: [
+            const AdCarousel(zone: 'dashboard'),
+            Expanded(child: _buildBody()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    return FutureBuilder<List<DocumentItem>>(
           future: _future,
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -231,8 +244,6 @@ class _ProfessorHomeScreenState extends State<ProfessorHomeScreen> {
               ),
             );
           },
-        ),
-      ),
     );
   }
 }

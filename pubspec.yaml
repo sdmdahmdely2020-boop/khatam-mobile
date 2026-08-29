@@ -47,6 +47,12 @@ dependencies:
   # (Khatam limite chaque compte à un seul appareil actif, voir le backend).
   shared_preferences: ^2.2.2
 
+  # Ouvre le lien d'une annonce du carrousel de publicités locales (bandeau
+  # catalogue/tableau de bord, voir features/ads/) dans le navigateur du
+  # téléphone quand l'utilisateur touche l'annonce. Version stable vérifiée
+  # sur pub.dev au moment de l'ajout.
+  url_launcher: ^6.3.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

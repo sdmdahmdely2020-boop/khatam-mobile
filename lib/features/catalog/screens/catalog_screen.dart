@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
+import '../../ads/widgets/ad_carousel.dart';
 import '../../auth/state/auth_state.dart';
 import '../models/document_item.dart';
 import '../services/catalog_service.dart';
@@ -131,6 +132,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 },
               ),
             ),
+            const AdCarousel(zone: 'catalog'),
             const SizedBox(height: 4),
             Expanded(child: _buildBody(catalogState)),
           ],

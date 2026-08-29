@@ -62,14 +62,14 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ⬜ FAQ
 - ⬜ À propos
 - ⬜ Formulaire de feedback
-- ⬜ Bandeau publicitaire (carrousel)
+- ✅ **Bandeau publicitaire (carrousel)** — publicités locales (annonceurs mauritaniens gérés depuis `admin.html`), défilement automatique toutes les 6s, sur le catalogue élève ET le tableau de bord professeur ; entièrement invisible tant qu'aucune annonce active n'existe pour la zone concernée
 
 ## Phase 7 — Finitions
 
 - ✅ **Icône de l'application Android** (logo Khatam, lot 1) — générée via `flutter_launcher_icons`, icône adaptative moderne (fond + premier plan)
 - ⬜ Nom d'application personnalisé, écran de démarrage natif
 - ⬜ Gestion hors-ligne basique (messages d'erreur réseau clairs, pas de crash)
-- 🔄 **Tests sur appareil réel** (Android) — premier vrai test effectué (APK release sur Galaxy Tab A9) ; a révélé la permission `INTERNET` manquante dans `AndroidManifest.xml`, corrigée
+- ✅ **Tests sur appareil réel** (Android) — testé en conditions réelles sur Galaxy Tab A9 (APK release) : connexion, icône de l'app, tout confirmé fonctionnel après le correctif de la permission `INTERNET`
 - ⬜ Préparation à la publication (Google Play en priorité)
 
 ---
