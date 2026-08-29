@@ -137,9 +137,19 @@ class _CatalogScreenState extends State<CatalogScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 2),
-          child: Text(
-            firstName.isEmpty ? 'Bonjour' : 'Bonjour, $firstName',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  firstName.isEmpty ? 'Bonjour' : 'Bonjour, $firstName',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _PlanBadge(subscriptionState: subscriptionState),
+            ],
           ),
         ),
         const Padding(
@@ -195,6 +205,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
         ),
         const SizedBox(height: 4),
         _SubscriptionBanner(subscriptionState: subscriptionState),
+        _ProgressBySubject(documents: catalogState.documents),
         const SubjectQuickFilter(),
         // La sélection de la semaine ne s'affiche que sur l'accueil "libre"
         // (pas de recherche/filtre matière en cours) pour ne pas distraire
@@ -286,6 +297,12 @@ class _DocumentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Un document payant jamais débloqué (ni acheté, ni pub, ni couvert par
+    // un abonnement Premium — auquel cas le serveur renverrait déjà
+    // `unlocked: true`, voir `hasAccess()` côté backend) : cadenas sur la
+    // vignette + indication qu'un abonnement Premium le débloquerait.
+    final locked = !document.free && !document.unlocked;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       clipBehavior: Clip.antiAlias,
@@ -305,17 +322,35 @@ class _DocumentCard extends StatelessWidget {
                 child: SizedBox(
                   width: 64,
                   height: 84,
-                  child: document.previewUrl.isEmpty
-                      ? Container(color: const Color(0xFFEFF3F8))
-                      : Image.network(
-                          document.previewUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEFF3F8)),
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return Container(color: const Color(0xFFEFF3F8));
-                          },
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      document.previewUrl.isEmpty
+                          ? Container(color: const Color(0xFFEFF3F8))
+                          : Image.network(
+                              document.previewUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(color: const Color(0xFFEFF3F8)),
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return Container(color: const Color(0xFFEFF3F8));
+                              },
+                            ),
+                      if (locked)
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.55),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.lock_outline, size: 12, color: Colors.white),
+                          ),
                         ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -375,6 +410,8 @@ class _DocumentCard extends StatelessWidget {
                           ),
                         if (document.unlocked)
                           const _Tag(label: 'Débloqué', color: AppTheme.brandGreen, filled: true),
+                        if (locked)
+                          const _Tag(label: 'Inclus dans Premium', color: AppTheme.brandGreen),
                       ],
                     ),
                   ],
@@ -441,15 +478,164 @@ class _SubscriptionBanner extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 13.5)),
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 13.5),
+                    ),
                     const SizedBox(height: 2),
                     Text(subtitle, style: const TextStyle(color: Colors.black54, fontSize: 12)),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: color),
+              if (!isPremium) ...[
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.brandGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: const Text(
+                    'Devenir Premium',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ] else
+                Icon(Icons.chevron_right, color: color),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Petit badge de plan (Free/Basic/Premium) affiché à côté de la salutation.
+/// Même règle que [_SubscriptionBanner] : rien tant que
+/// [SubscriptionState.load] n'a pas répondu, pour ne jamais afficher un état
+/// intermédiaire trompeur (ex. "Free" pendant une fraction de seconde pour
+/// un élève en fait déjà Premium).
+class _PlanBadge extends StatelessWidget {
+  final SubscriptionState subscriptionState;
+
+  const _PlanBadge({required this.subscriptionState});
+
+  @override
+  Widget build(BuildContext context) {
+    if (subscriptionState.status != SubscriptionLoadStatus.loaded) {
+      return const SizedBox.shrink();
+    }
+
+    final isPremium = subscriptionState.isPremium;
+    final isBasic = subscriptionState.isBasic;
+    final label = isPremium ? 'Premium' : (isBasic ? 'Basic' : 'Free');
+    final color = isPremium ? AppTheme.brandGreen : (isBasic ? AppTheme.brandBlue : Colors.black45);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: color),
+      ),
+    );
+  }
+}
+
+/// "Ma progression" — pourcentage de documents accessibles par matière,
+/// calculé côté app à partir du catalogue déjà chargé (aucun appel réseau
+/// supplémentaire, aucun champ serveur dédié). "Accessible" inclut les
+/// documents gratuits, achetés, débloqués par pub, ou couverts par un
+/// abonnement Premium — voir [DocumentItem.unlocked]. Limité aux 5 matières
+/// les plus représentées dans le catalogue actuel pour rester "simple",
+/// comme demandé — pas une liste exhaustive de toutes les matières libres
+/// saisies par les professeurs.
+class _ProgressBySubject extends StatelessWidget {
+  final List<DocumentItem> documents;
+
+  const _ProgressBySubject({required this.documents});
+
+  @override
+  Widget build(BuildContext context) {
+    if (documents.isEmpty) return const SizedBox.shrink();
+
+    final totals = <String, int>{};
+    final unlockedCounts = <String, int>{};
+    for (final doc in documents) {
+      totals[doc.matiere] = (totals[doc.matiere] ?? 0) + 1;
+      if (doc.unlocked) unlockedCounts[doc.matiere] = (unlockedCounts[doc.matiere] ?? 0) + 1;
+    }
+
+    final entries = totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    final top = entries.take(5).toList();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF6F8FB),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Ma progression', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
+            const SizedBox(height: 10),
+            ...top.map((entry) {
+              final total = entry.value;
+              final done = unlockedCounts[entry.key] ?? 0;
+              final ratio = total == 0 ? 0.0 : done / total;
+              final percent = (ratio * 100).round();
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SubjectIcon(matiere: entry.key, size: 14),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            entry.key,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Text(
+                          '$percent%',
+                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.brandBlue),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: ratio,
+                        minHeight: 6,
+                        backgroundColor: Colors.black12,
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.brandBlue),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
         ),
       ),
     );

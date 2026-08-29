@@ -1,67 +1,68 @@
-# Khatam — Application mobile : "Mes documents" (profil élève, 29/08)
+# Khatam — Application mobile : accueil élève amélioré (29/08)
 
 ## Contexte
 
-Comme convenu après la validation des abonnements ("parfait tout fonctionne
-normal" sur ta tablette) : voici le profil élève — la première des deux
-étapes restantes (documents achetés + progression simple, puis le catalogue
-professeur).
+Tu as demandé quatre ajouts précis sur l'écran d'accueil de l'élève, sans
+toucher au serveur et sans rien casser de l'existant. C'est fait — voici le
+détail.
 
-**Important : installe d'abord le zip backend séparé
-(`khatam-backend-mes-documents-2908.zip`)** avant celui-ci — l'application a
-besoin de la nouvelle route serveur pour fonctionner.
+## Ce qui est nouveau sur l'écran d'accueil (élève)
 
-## Ce qui est nouveau dans l'application
+1. **Badge de plan** : à côté de "Bonjour, [prénom]", un petit badge coloré
+   indique le plan actuel — gris pour "Free", bleu pour "Basic", vert pour
+   "Premium".
 
-**Nouvel écran "Mes documents"** — accessible depuis "Mon compte" (nouveau
-bouton bleu, juste au-dessus de "Mon abonnement"). Il affiche :
+2. **Cadenas sur les documents verrouillés** : un document payant que
+   l'élève n'a pas encore débloqué affiche maintenant une petite icône de
+   cadenas sur sa vignette, et une étiquette verte "Inclus dans Premium" à
+   côté du prix — pour bien montrer qu'un abonnement Premium donnerait
+   accès à ce document sans payer à l'unité.
 
-1. **Un résumé en haut** : nombre de documents débloqués, total dépensé en
-   MRU, un badge si tu es abonné Basic/Premium, et une répartition par
-   matière (ex. "Mathématiques · 3", "Physique · 2").
-2. **La liste des documents** que l'élève a réellement débloqués — achat
-   confirmé ou publicité regardée, avec une étiquette qui indique comment
-   ("Acheté · 300 MRU" ou "Débloqué par pub") et la date. Toucher un document
-   ouvre sa fiche complète, comme partout ailleurs dans l'app.
-3. **Si la liste est vide** : un message adapté — pour un élève qui n'a rien
-   acheté, une invitation à aller voir le catalogue ; pour un abonné Premium
-   qui n'a rien acheté individuellement, une explication que c'est normal
-   (son abonnement lui donne déjà accès à tout le catalogue, donc cette
-   liste-là peut rester vide même s'il utilise beaucoup l'application).
+3. **Bouton "Devenir Premium"** : le bandeau qui invite à s'abonner (déjà
+   présent) a maintenant un vrai bouton vert "Devenir Premium" bien visible,
+   en plus du bandeau cliquable. Un élève déjà abonné Premium ne voit pas ce
+   bouton (il n'en a pas besoin).
+
+4. **Bloc "Ma progression"** : un nouveau bloc juste en dessous du bandeau
+   d'abonnement montre, pour les matières les plus présentes dans le
+   catalogue, une barre de progression avec le pourcentage de documents déjà
+   accessibles à l'élève (gratuits, achetés, débloqués par pub, ou couverts
+   par Premium). Par exemple "Mathématiques — 60 %".
 
 ## Ce qui n'a PAS changé
 
-- Rien dans le catalogue, les paiements, ou les abonnements n'a été touché.
-- Aucune nouvelle donnée à saisir : cet écran ne fait qu'afficher ce qui
-  existe déjà dans ton système (achats et déblocages publicité).
+- **Aucun changement côté serveur** — cette livraison ne touche que
+  l'application mobile, comme demandé.
+- La disposition générale de l'écran, la recherche, les filtres par série,
+  la "Sélection de la semaine" et le bandeau publicitaire fonctionnent
+  exactement comme avant, rien n'a été retiré ni déplacé.
+- Les couleurs utilisées sont les couleurs déjà existantes de l'application
+  (bleu et vert Khatam) — aucune nouvelle couleur introduite.
 
 ## Installation
 
-Comme pour les dernières livraisons : seul le dossier `lib/` change, aucun
-nouveau paquet à ajouter dans `pubspec.yaml`.
+Comme d'habitude : seul le dossier `lib/` change, aucun nouveau paquet à
+ajouter.
 
-1. **D'abord**, installe et déploie le zip backend séparé (voir son propre
-   `INSTRUCTIONS.md`).
-2. Colle le contenu de ce zip dans ton projet (remplace `lib/`).
-3. `flutter pub get` par précaution.
-4. `flutter analyze` — comme la dernière fois, des lignes "info" (style,
-   sans conséquence) sont normales ; seule une ligne "error" (en rouge)
-   demanderait une correction. Envoie-moi le résultat si tu vois du rouge.
-5. Redémarre complètement l'application (voir le rappel plus bas si besoin)
-   et va dans "Mon compte" → "Mes documents". Achète ou débloque un document
-   par pub si tu n'en as pas déjà, et vérifie qu'il apparaît bien dans la
-   liste avec le bon montant/la bonne étiquette.
+1. Colle le contenu de ce zip dans ton projet (remplace `lib/`).
+2. `flutter pub get` par précaution.
+3. `flutter analyze` — des lignes "info" (style) sont normales, seule une
+   ligne "error" en rouge demanderait une correction.
+4. Redémarre complètement l'application (ferme-la depuis les applications
+   récentes puis rouvre-la, ou relance "Run").
+5. Connecte-toi avec un compte élève et regarde l'écran d'accueil :
+   - le badge de plan à côté de "Bonjour",
+   - un cadenas sur un document payant non débloqué,
+   - le bouton "Devenir Premium" dans le bandeau,
+   - le bloc "Ma progression" avec les barres par matière.
 
-### Rappel : comment fermer complètement l'app sur ta tablette
+## Et après ?
 
-Bouton "applications récentes" (ou glisser depuis le bas et maintenir) →
-trouve la carte Khatam → glisse-la pour la fermer. Puis relance-la depuis
-l'écran d'accueil, ou relance "Run" dans ton éditeur.
-
-## Étapes suivantes (comme convenu, PAS encore construites)
-
-Il ne reste plus que la présentation du catalogue professeur d'après le plan
-initial. On s'y attaque dès que tu as validé cette livraison.
+Cette étape clôt la demande précise que tu avais donnée pour l'accueil
+élève. Dis-moi si tu veux ajuster un détail (couleurs, matières affichées,
+etc.) ou passer à autre chose du plan plus large (profil public d'un
+professeur, modification du prix d'un document depuis l'app, boost,
+messagerie avec l'administrateur...).
 
 ## Si quelque chose ne marche pas
 

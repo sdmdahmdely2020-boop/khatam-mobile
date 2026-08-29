@@ -29,6 +29,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ Fiche document (aperçu, prix, bouton Ouvrir/Débloquer, cœur favoris pour un élève)
 - ✅ **Icônes de matière** (lot 3) sur les cartes de documents (catalogue, favoris, "Mes documents" professeur) et sur la fiche document
 - ✅ **Accueil élève repensé** — salutation personnalisée ("Bonjour, Prénom"), filtre rapide par matière (icônes du lot 3, appliqué côté app puisque `matiere` est un texte libre — voir note technique), section "Sélection de la semaine" (mise en avant éditoriale de quelques documents existants, change chaque semaine, aucun nouveau prix/backend), le tout dans une page qui défile d'un bloc
+- ✅ **Accueil élève : badge de plan, cadenas, bouton Premium, progression (29/08)** — quatre ajouts purement visuels, aucun changement serveur : (1) badge coloré Free/Basic/Premium à côté de la salutation, (2) icône cadenas sur la vignette + étiquette "Inclus dans Premium" pour un document payant non débloqué, (3) bouton "Devenir Premium" directement dans le bandeau d'abonnement pour un élève non-Premium, (4) bloc "Ma progression" avec une barre par matière (ex. "Mathématiques 60 %"), calculée sur les documents déjà chargés. Rien retiré ni déplacé — recherche, filtres, sélection de la semaine et publicités restent identiques.
 - ⬜ Profil public d'un professeur (bio, matières, tous ses documents, likes)
 - ⬜ Filtres supplémentaires côté serveur (Année, Type) — Matière est maintenant filtrable (côté app), Série déjà branchée côté serveur
 
@@ -52,6 +53,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 ## Phase 5 — Espace professeur (démarrée)
 
 - ✅ **"Mes documents"** — liste de ses propres documents (publiés + brouillons), bouton Publier/Dépublier
+- ✅ **Présentation retravaillée de "Mes documents" (29/08, dernière étape du plan initial)** — salutation personnalisée, mini-résumé (nombre de documents / publiés / vues totales) en un coup d'œil sans quitter l'écran, recherche par titre, filtre par statut (Tous/Publiés/Brouillons) — tout appliqué côté app (peu de documents par professeur, pas besoin d'aller-retour serveur à chaque frappe). Les statistiques complètes restent sur l'écran dédié, pas dupliquées ici.
 - ✅ **Upload d'un NOUVEAU document** directement depuis l'app (titre, matière, série, année, type, prix, gratuit/pub/correction IA, fichier PDF) — bouton "Nouveau document" sur l'écran "Mes documents"
 - ⬜ Modifier le prix d'un document existant depuis l'app (possible côté serveur, pas encore construit côté app)
 - ✅ **Portefeuille et demande de retrait** — solde disponible, historique des ventes confirmées, demande de retrait Bankily/Masrivi/Sedad (traitement manuel par un administrateur, comme sur le site web)
