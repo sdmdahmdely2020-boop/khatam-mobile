@@ -28,8 +28,9 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ Catalogue de documents (liste + recherche par titre + filtre par Série)
 - ✅ Fiche document (aperçu, prix, bouton Ouvrir/Débloquer, cœur favoris pour un élève)
 - ✅ **Icônes de matière** (lot 3) sur les cartes de documents (catalogue, favoris, "Mes documents" professeur) et sur la fiche document
+- ✅ **Accueil élève repensé** — salutation personnalisée ("Bonjour, Prénom"), filtre rapide par matière (icônes du lot 3, appliqué côté app puisque `matiere` est un texte libre — voir note technique), section "Sélection de la semaine" (mise en avant éditoriale de quelques documents existants, change chaque semaine, aucun nouveau prix/backend), le tout dans une page qui défile d'un bloc
 - ⬜ Profil public d'un professeur (bio, matières, tous ses documents, likes)
-- ⬜ Filtres supplémentaires (Année, Matière, Type) — seule la Série est branchée pour l'instant
+- ⬜ Filtres supplémentaires côté serveur (Année, Type) — Matière est maintenant filtrable (côté app), Série déjà branchée côté serveur
 
 ## Phase 3 — Paiement et déblocage ✅ (hors reçu photo)
 
@@ -38,6 +39,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ Déblocage par publicité (simulation — pas encore de vrai SDK publicitaire)
 - ✅ **Favoris** — cœur sur la fiche document + écran "Mes favoris" (accessible depuis le catalogue)
 - ⬜ Envoi d'une capture d'écran du reçu de paiement (facultatif côté serveur, nécessite un nouveau paquet Flutter)
+- ✅ **Abonnements Basic/Premium (modèle hybride, 29/08)** — écran "Mon abonnement" (accessible depuis "Mon compte") : formules Basic/Premium (prix/durée/réduction configurés par l'administrateur), même circuit de paiement manuel Bankily/Masrivi/Sedad que l'achat de document. Accueil élève : bandeau du plan actif (ou invitation à souscrire), publicités automatiquement masquées pour un abonné Premium, prix réduit affiché (barré/nouveau prix) sur les cartes du catalogue, la fiche document et l'écran de déblocage pour un abonné Basic. S'ajoute à l'achat document par document, ne le remplace pas.
 
 ## Phase 4 — Espace élève
 
@@ -82,3 +84,5 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - **Paiement** : le déblocage n'est JAMAIS automatique — confirmation manuelle par un administrateur, comme sur le site web.
 - **Favoris** : `GET /api/favorites` renvoie une forme de données différente de `GET /api/documents` (lignes brutes de la base, pas la forme enrichie) — un modèle séparé (`FavoriteDocument`) gère ça plutôt que de forcer la réutilisation de `DocumentItem`.
 - **Un seul appareil par compte** : contrainte disponible côté backend mais **désactivée pour l'instant**.
+- **Modèle économique** : mis à jour le 29/08 — Khatam garde l'achat document par document (achat unique via Bankily/Masrivi/Sedad) ET propose désormais de vrais abonnements Basic/Premium (modèle HYBRIDE, décision explicite de sidi) : Basic donne une réduction sur les documents payants, Premium retire les publicités. Les deux circuits coexistent, l'un n'a jamais remplacé l'autre.
+- **Filtre par matière** : `matiere` est un texte libre tapé par chaque professeur (pas une liste fermée), et le paramètre serveur `GET /api/documents?matiere=` exige une égalité EXACTE — donc le filtre rapide par matière de l'accueil (`SubjectQuickFilter`) est appliqué CÔTÉ APP sur la liste déjà chargée (`CatalogState.visibleDocuments`, via `SubjectIcons.matches()`), pas via ce paramètre serveur.

@@ -9,6 +9,18 @@ class DocumentItem {
   final int annee;
   final String type;
   final num prix;
+
+  /// Prix réellement affiché à CET élève, après réduction d'abonnement Basic
+  /// éventuelle (voir `khatam-backend/src/routes/documents.js`,
+  /// `effectivePriceFor()` — modèle hybride du 29/08). Égal à [prix] pour
+  /// tout le monde d'autre (gratuit, non connecté, Free, Premium). [prix]
+  /// lui-même n'est JAMAIS modifié par cette réduction — c'est le prix "de
+  /// base" affiché au site web, qui ne connaît pas les abonnements.
+  final num effectivePrix;
+
+  /// true si [effectivePrix] < [prix] pour cet élève (abonné Basic actif).
+  final bool subscriptionDiscountApplied;
+
   final bool free;
   final bool adUnlock;
   final bool aiGrading;
@@ -39,6 +51,8 @@ class DocumentItem {
     required this.annee,
     required this.type,
     required this.prix,
+    required this.effectivePrix,
+    required this.subscriptionDiscountApplied,
     required this.free,
     required this.adUnlock,
     required this.aiGrading,
@@ -77,6 +91,11 @@ class DocumentItem {
       annee: (json['annee'] as num?)?.toInt() ?? 0,
       type: json['type'] as String? ?? '',
       prix: (json['prix'] as num?) ?? 0,
+      // effectivePrix/subscriptionDiscountApplied n'existent que depuis le
+      // 29/08 (modèle hybride) — repli sur le prix normal si absents (ex.
+      // réponse mise en cache d'avant cette date), jamais d'erreur.
+      effectivePrix: (json['effectivePrix'] as num?) ?? (json['prix'] as num?) ?? 0,
+      subscriptionDiscountApplied: json['subscriptionDiscountApplied'] as bool? ?? false,
       free: json['free'] as bool? ?? false,
       adUnlock: json['adUnlock'] as bool? ?? false,
       aiGrading: json['aiGrading'] as bool? ?? false,
@@ -115,6 +134,11 @@ class DocumentItem {
 
   /// Libellé prix pour affichage : "Gratuit" ou "XXX MRU".
   String get priceLabel => free ? 'Gratuit' : '${prix.toStringAsFixed(0)} MRU';
+
+  /// Libellé du prix réduit (abonné Basic) — n'a de sens que si
+  /// [subscriptionDiscountApplied] est vrai ; sinon identique à [priceLabel].
+  String get effectivePriceLabel =>
+      free ? 'Gratuit' : '${effectivePrix.toStringAsFixed(0)} MRU';
 
   bool get isPublished => statut == 'publie';
 }

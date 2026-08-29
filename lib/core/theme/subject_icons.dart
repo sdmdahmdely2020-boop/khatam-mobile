@@ -61,6 +61,18 @@ class SubjectIcons {
     }
     return null;
   }
+
+  /// Vrai si le texte libre [matiere] contient le mot-clé [keyword]
+  /// (comparaison insensible aux accents et à la casse, même normalisation
+  /// que [assetFor]). Utilisé par le filtre rapide par matière du catalogue
+  /// (voir `SubjectQuickFilter`) — filtrage fait côté app plutôt que via le
+  /// paramètre `matiere` de `GET /api/documents` côté serveur, qui exige une
+  /// égalité EXACTE (voir `documents.js`) et raterait donc la plupart des
+  /// documents puisque `matiere` est un texte libre tapé par chaque
+  /// professeur (ex. "Maths" vs "Mathématiques").
+  static bool matches(String matiere, String keyword) {
+    return _normalize(matiere).contains(_normalize(keyword));
+  }
 }
 
 /// Petit badge circulaire affichant l'icône de la matière correspondante

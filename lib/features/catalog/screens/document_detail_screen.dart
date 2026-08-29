@@ -263,14 +263,44 @@ class _DocumentDetailScreenState extends State<DocumentDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text('Prix', style: TextStyle(color: Colors.black54, fontSize: 12.5)),
-                        Text(
-                          doc.priceLabel,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: doc.free ? AppTheme.brandGreen : Colors.black87,
+                        if (doc.subscriptionDiscountApplied && !doc.free) ...[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(
+                                doc.effectivePriceLabel,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: AppTheme.brandBlue,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                doc.priceLabel,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black38,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                          const SizedBox(height: 2),
+                          const Text(
+                            'Prix réduit — abonnement Basic',
+                            style: TextStyle(fontSize: 11.5, color: AppTheme.brandBlue, fontWeight: FontWeight.w600),
+                          ),
+                        ] else
+                          Text(
+                            doc.priceLabel,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: doc.free ? AppTheme.brandGreen : Colors.black87,
+                            ),
+                          ),
                         const SizedBox(height: 14),
                         SizedBox(
                           width: double.infinity,

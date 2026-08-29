@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../ai_grading/screens/ai_history_screen.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../auth/state/auth_state.dart';
+import '../../subscriptions/screens/subscription_plans_screen.dart';
 
 /// Écran "Mon compte" minimal, commun élève/professeur : informations du
 /// profil (lecture seule pour l'instant) + déconnexion. La modification du
@@ -97,6 +98,18 @@ class AccountScreen extends StatelessWidget {
             _InfoRow(icon: Icons.email_outlined, label: 'Email', value: user?.email ?? '—'),
             if (user != null && !user.isProfessor) ...[
               const Divider(height: 28),
+              OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                ),
+                icon: const Icon(Icons.workspace_premium_outlined, color: AppTheme.brandGreen),
+                label: const Text('Mon abonnement', style: TextStyle(color: AppTheme.brandGreen)),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppTheme.brandGreen),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const AiHistoryScreen()),

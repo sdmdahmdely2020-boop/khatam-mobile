@@ -193,10 +193,35 @@ class _UnlockScreenState extends State<UnlockScreen> {
                   const SizedBox(height: 20),
                 ],
 
-                Text(
-                  '${doc.priceLabel} — choisissez un moyen de paiement',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${doc.effectivePriceLabel} — choisissez un moyen de paiement',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    if (doc.subscriptionDiscountApplied) ...[
+                      const SizedBox(width: 8),
+                      Text(
+                        doc.priceLabel,
+                        style: const TextStyle(
+                          color: Colors.black38,
+                          decoration: TextDecoration.lineThrough,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
+                if (doc.subscriptionDiscountApplied) ...[
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Prix réduit — abonnement Basic',
+                    style: TextStyle(fontSize: 11.5, color: AppTheme.brandBlue, fontWeight: FontWeight.w600),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 ...kPaymentMethods.map(
                   (method) => Padding(
@@ -205,7 +230,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
                       icon: Icons.account_balance_wallet_outlined,
                       iconColor: AppTheme.brandBlue,
                       title: paymentMethodLabel(method),
-                      subtitle: 'Payer ${doc.priceLabel} via ${paymentMethodLabel(method)}',
+                      subtitle: 'Payer ${doc.effectivePriceLabel} via ${paymentMethodLabel(method)}',
                       onTap: _busy ? null : () => _payWith(method),
                     ),
                   ),
