@@ -45,7 +45,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 - ✅ **Mon compte** (lecture seule : nom, téléphone, email, rôle) + déconnexion
 - ⬜ Modification du profil (photo, changement de série)
-- ⬜ Mes documents achetés / téléchargements
+- ✅ **Mes documents (achetés + débloqués par pub) et progression simple (29/08)** — nouvel écran "Mes documents" (depuis "Mon compte") : liste des documents réellement débloqués (achat confirmé ou publicité vue, badge distinct pour chaque), avec la date et le montant payé. En haut, un résumé "progression" : nombre total de documents débloqués, total dépensé en MRU, badge Basic/Premium si abonné, répartition par matière. Nouvelle route backend `GET /api/documents/mine`.
 - ✅ **Correction IA** — envoi d'une copie (photo, PDF, ou texte tapé) pour un document où c'est activé, note sur 20 + retour détaillé (points forts/à travailler), historique complet (accessible depuis la fiche document et depuis "Mon compte")
 - ⬜ Note de l'application (étoiles)
 

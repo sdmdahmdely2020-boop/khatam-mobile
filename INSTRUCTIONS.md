@@ -1,80 +1,67 @@
-# Khatam — Application mobile branchée sur les abonnements (29/08)
+# Khatam — Application mobile : "Mes documents" (profil élève, 29/08)
 
 ## Contexte
 
-Comme convenu après la livraison du panneau admin ("après ça, on continue
-avec l'écran d'accueil de l'application mobile"), voici l'application
-connectée au système d'abonnement Basic/Premium qui tourne déjà sur ton
-serveur (Render) et que tu peux gérer depuis `admin.html`.
+Comme convenu après la validation des abonnements ("parfait tout fonctionne
+normal" sur ta tablette) : voici le profil élève — la première des deux
+étapes restantes (documents achetés + progression simple, puis le catalogue
+professeur).
 
-Rappel important : ce système **s'ajoute** à l'achat de document à l'unité,
-il ne le remplace pas. Un élève peut toujours acheter un document tout seul
-sans jamais s'abonner — rien ne change pour lui s'il ne le souhaite pas.
+**Important : installe d'abord le zip backend séparé
+(`khatam-backend-mes-documents-2908.zip`)** avant celui-ci — l'application a
+besoin de la nouvelle route serveur pour fonctionner.
 
 ## Ce qui est nouveau dans l'application
 
-1. **Écran "Mon abonnement"** — accessible depuis "Mon compte" (nouveau
-   bouton vert, juste au-dessus de "Mes corrections IA"). Affiche :
-   - le plan actuellement actif de l'élève (Gratuit / Basic / Premium) et sa
-     date d'expiration si abonné ;
-   - les deux formules Basic et Premium, avec le prix, la durée et la
-     réduction — toujours les valeurs que TU as configurées dans
-     `admin.html`, jamais des chiffres fixés dans l'application ;
-   - un bouton pour souscrire (ou renouveler), qui ouvre le même circuit de
-     paiement que pour un document : numéro Bankily/Masrivi/Sedad affiché,
-     l'élève colle son numéro de reçu, puis attend TA confirmation manuelle
-     dans `admin.html` (jamais automatique).
-   - Si un élève est déjà Premium, le bouton Basic devient "Inclus dans
-     Premium" (grisé) — Premium contient déjà tout ce que propose Basic.
+**Nouvel écran "Mes documents"** — accessible depuis "Mon compte" (nouveau
+bouton bleu, juste au-dessus de "Mon abonnement"). Il affiche :
 
-2. **Accueil élève** — juste sous les filtres de série, un bandeau indique :
-   - "Passez à Basic ou Premium" pour un élève non abonné (touche le bandeau
-     pour ouvrir l'écran d'abonnement) ;
-   - "Abonnement Basic actif" ou "Abonnement Premium actif" sinon.
-   - Un abonné **Premium** ne voit plus jamais le bandeau publicitaire du
-     catalogue — retiré automatiquement, pas juste caché.
-
-3. **Prix réduit pour un abonné Basic** — partout où un prix de document
-   s'affiche (carte du catalogue, fiche document, écran de déblocage), un
-   élève Basic voit désormais le prix réduit à côté de l'ancien prix barré,
-   avec la mention "Prix réduit — abonnement Basic". C'est aussi ce montant
-   réduit qui est réellement débité au moment du paiement — jamais l'ancien
-   prix affiché par erreur puis un montant différent demandé.
+1. **Un résumé en haut** : nombre de documents débloqués, total dépensé en
+   MRU, un badge si tu es abonné Basic/Premium, et une répartition par
+   matière (ex. "Mathématiques · 3", "Physique · 2").
+2. **La liste des documents** que l'élève a réellement débloqués — achat
+   confirmé ou publicité regardée, avec une étiquette qui indique comment
+   ("Acheté · 300 MRU" ou "Débloqué par pub") et la date. Toucher un document
+   ouvre sa fiche complète, comme partout ailleurs dans l'app.
+3. **Si la liste est vide** : un message adapté — pour un élève qui n'a rien
+   acheté, une invitation à aller voir le catalogue ; pour un abonné Premium
+   qui n'a rien acheté individuellement, une explication que c'est normal
+   (son abonnement lui donne déjà accès à tout le catalogue, donc cette
+   liste-là peut rester vide même s'il utilise beaucoup l'application).
 
 ## Ce qui n'a PAS changé
 
-- L'achat d'un document à l'unité, sans abonnement : identique à avant,
-  aucune régression.
-- La confirmation des paiements reste TOUJOURS manuelle, faite par toi dans
-  `admin.html` — l'application ne débloque et n'active jamais rien toute
-  seule.
-- Rien côté serveur n'a besoin d'être retouché pour cette livraison : le
-  backend et `admin.html` que tu as déjà déployés le 29/08 fonctionnent tels
-  quels avec cette nouvelle version de l'application.
+- Rien dans le catalogue, les paiements, ou les abonnements n'a été touché.
+- Aucune nouvelle donnée à saisir : cet écran ne fait qu'afficher ce qui
+  existe déjà dans ton système (achats et déblocages publicité).
 
 ## Installation
 
 Comme pour les dernières livraisons : seul le dossier `lib/` change, aucun
 nouveau paquet à ajouter dans `pubspec.yaml`.
 
-1. Colle le contenu de ce zip dans ton projet (remplace `lib/`).
-2. `flutter pub get` par précaution.
-3. `flutter analyze` — envoie-moi le résultat s'il signale quoi que ce soit.
-4. Redémarre complètement l'application (pas de hot reload) et regarde :
-   - "Mon compte" → "Mon abonnement" s'affiche bien et charge les prix ;
-   - l'accueil élève affiche le bon bandeau ;
-   - souscris un abonnement de test, confirme-le dans `admin.html`, puis
-     vérifie que l'application affiche bien le nouveau plan et (pour
-     Premium) que les publicités disparaissent de l'accueil, ou (pour
-     Basic) que le prix réduit apparaît sur un document payant.
+1. **D'abord**, installe et déploie le zip backend séparé (voir son propre
+   `INSTRUCTIONS.md`).
+2. Colle le contenu de ce zip dans ton projet (remplace `lib/`).
+3. `flutter pub get` par précaution.
+4. `flutter analyze` — comme la dernière fois, des lignes "info" (style,
+   sans conséquence) sont normales ; seule une ligne "error" (en rouge)
+   demanderait une correction. Envoie-moi le résultat si tu vois du rouge.
+5. Redémarre complètement l'application (voir le rappel plus bas si besoin)
+   et va dans "Mon compte" → "Mes documents". Achète ou débloque un document
+   par pub si tu n'en as pas déjà, et vérifie qu'il apparaît bien dans la
+   liste avec le bon montant/la bonne étiquette.
+
+### Rappel : comment fermer complètement l'app sur ta tablette
+
+Bouton "applications récentes" (ou glisser depuis le bas et maintenir) →
+trouve la carte Khatam → glisse-la pour la fermer. Puis relance-la depuis
+l'écran d'accueil, ou relance "Run" dans ton éditeur.
 
 ## Étapes suivantes (comme convenu, PAS encore construites)
 
-D'après le plan initial que tu avais donné avant le pivot vers les
-abonnements : le **profil élève** (documents déjà achetés, progression
-simple), puis la présentation du catalogue professeur. On continue dans cet
-ordre dès que tu as validé cette livraison, sauf si tu préfères changer de
-priorité.
+Il ne reste plus que la présentation du catalogue professeur d'après le plan
+initial. On s'y attaque dès que tu as validé cette livraison.
 
 ## Si quelque chose ne marche pas
 
