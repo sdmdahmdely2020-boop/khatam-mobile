@@ -1,43 +1,43 @@
-# Khatam — Application mobile : accueil élève amélioré (29/08)
+# Khatam — Application mobile : nouvel écran "Mon profil" (29/08)
 
 ## Contexte
 
-Tu as demandé quatre ajouts précis sur l'écran d'accueil de l'élève, sans
-toucher au serveur et sans rien casser de l'existant. C'est fait — voici le
-détail.
+Tu as demandé un écran de profil regroupant les informations de l'élève, son
+abonnement et ses documents déjà débloqués, en cartes propres, accessible
+depuis l'accueil. C'est fait — aucun changement côté serveur.
 
-## Ce qui est nouveau sur l'écran d'accueil (élève)
+## Ce qui est nouveau
 
-1. **Badge de plan** : à côté de "Bonjour, [prénom]", un petit badge coloré
-   indique le plan actuel — gris pour "Free", bleu pour "Basic", vert pour
-   "Premium".
+Un nouvel écran **"Mon profil"**, avec trois cartes qui s'enchaînent :
 
-2. **Cadenas sur les documents verrouillés** : un document payant que
-   l'élève n'a pas encore débloqué affiche maintenant une petite icône de
-   cadenas sur sa vignette, et une étiquette verte "Inclus dans Premium" à
-   côté du prix — pour bien montrer qu'un abonnement Premium donnerait
-   accès à ce document sans payer à l'unité.
+1. **Identité** : nom complet et numéro de téléphone de l'élève connecté.
 
-3. **Bouton "Devenir Premium"** : le bandeau qui invite à s'abonner (déjà
-   présent) a maintenant un vrai bouton vert "Devenir Premium" bien visible,
-   en plus du bandeau cliquable. Un élève déjà abonné Premium ne voit pas ce
-   bouton (il n'en a pas besoin).
+2. **Abonnement** : le plan actuel (Free / Basic / Premium) avec un badge
+   coloré — gris pour Free, bleu pour Basic, vert pour Premium — et, si un
+   abonnement payant est actif, sa date d'expiration ("Expire le
+   JJ/MM/AAAA"). Si l'élève n'est pas encore Premium, un bouton
+   ("Devenir Premium" ou "Passer à Premium" pour un abonné Basic) mène
+   directement vers les formules d'abonnement.
 
-4. **Bloc "Ma progression"** : un nouveau bloc juste en dessous du bandeau
-   d'abonnement montre, pour les matières les plus présentes dans le
-   catalogue, une barre de progression avec le pourcentage de documents déjà
-   accessibles à l'élève (gratuits, achetés, débloqués par pub, ou couverts
-   par Premium). Par exemple "Mathématiques — 60 %".
+3. **Documents débloqués** : la liste des documents que l'élève a
+   effectivement achetés ou débloqués par publicité, chacun dans sa propre
+   carte (vignette, titre, matière, série, comment il a été débloqué et
+   quand). Un message adapté s'affiche s'il n'y a encore rien.
+
+## Comment y accéder
+
+Une nouvelle icône (un badge) a été ajoutée en haut de l'écran d'accueil,
+entre l'icône "Favoris" et l'icône "Mon compte". Elle ouvre directement
+"Mon profil".
 
 ## Ce qui n'a PAS changé
 
-- **Aucun changement côté serveur** — cette livraison ne touche que
-  l'application mobile, comme demandé.
-- La disposition générale de l'écran, la recherche, les filtres par série,
-  la "Sélection de la semaine" et le bandeau publicitaire fonctionnent
-  exactement comme avant, rien n'a été retiré ni déplacé.
-- Les couleurs utilisées sont les couleurs déjà existantes de l'application
-  (bleu et vert Khatam) — aucune nouvelle couleur introduite.
+- **Aucun changement côté serveur** — cet écran réutilise deux informations
+  déjà disponibles (l'abonnement et les documents débloqués), simplement
+  présentées ensemble différemment.
+- L'écran "Mon compte" existant n'a pas été touché — il garde son rôle
+  (déconnexion, accès aux corrections IA, etc.). Les deux écrans coexistent.
+- Rien d'autre sur l'accueil n'a changé, à part la nouvelle icône.
 
 ## Installation
 
@@ -50,19 +50,17 @@ ajouter.
    ligne "error" en rouge demanderait une correction.
 4. Redémarre complètement l'application (ferme-la depuis les applications
    récentes puis rouvre-la, ou relance "Run").
-5. Connecte-toi avec un compte élève et regarde l'écran d'accueil :
-   - le badge de plan à côté de "Bonjour",
-   - un cadenas sur un document payant non débloqué,
-   - le bouton "Devenir Premium" dans le bandeau,
-   - le bloc "Ma progression" avec les barres par matière.
+5. Connecte-toi avec un compte élève, et sur l'accueil, appuie sur la
+   nouvelle icône "badge" en haut : tu dois voir tes informations, ton
+   abonnement, et tes documents débloqués.
 
 ## Et après ?
 
-Cette étape clôt la demande précise que tu avais donnée pour l'accueil
-élève. Dis-moi si tu veux ajuster un détail (couleurs, matières affichées,
-etc.) ou passer à autre chose du plan plus large (profil public d'un
-professeur, modification du prix d'un document depuis l'app, boost,
-messagerie avec l'administrateur...).
+Dis-moi si tu veux ajuster un détail sur cet écran (par exemple ajouter une
+photo de profil, ou permettre de modifier le numéro de téléphone), ou passer
+à autre chose du plan plus large (profil public d'un professeur,
+modification du prix d'un document depuis l'app, boost, messagerie avec
+l'administrateur...).
 
 ## Si quelque chose ne marche pas
 

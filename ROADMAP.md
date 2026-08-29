@@ -47,6 +47,7 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 - ✅ **Mon compte** (lecture seule : nom, téléphone, email, rôle) + déconnexion
 - ⬜ Modification du profil (photo, changement de série)
 - ✅ **Mes documents (achetés + débloqués par pub) et progression simple (29/08)** — nouvel écran "Mes documents" (depuis "Mon compte") : liste des documents réellement débloqués (achat confirmé ou publicité vue, badge distinct pour chaque), avec la date et le montant payé. En haut, un résumé "progression" : nombre total de documents débloqués, total dépensé en MRU, badge Basic/Premium si abonné, répartition par matière. Nouvelle route backend `GET /api/documents/mine`.
+- ✅ **Écran "Mon profil" (29/08)** — nouvel écran dédié, accessible directement depuis l'accueil (icône dans la barre du haut) : carte identité (nom, téléphone), carte abonnement (plan Free/Basic/Premium avec badge coloré + date d'expiration si actif, bouton "Devenir Premium"/"Passer à Premium" sinon), puis la liste des documents précédemment débloqués — le tout en cartes Material, aucune nouvelle route backend (réutilise `GET /api/subscriptions/me` et `GET /api/documents/mine`, déjà en place). Distinct de "Mon compte" qui garde son rôle (déconnexion, corrections IA).
 - ✅ **Correction IA** — envoi d'une copie (photo, PDF, ou texte tapé) pour un document où c'est activé, note sur 20 + retour détaillé (points forts/à travailler), historique complet (accessible depuis la fiche document et depuis "Mon compte")
 - ⬜ Note de l'application (étoiles)
 

@@ -6,6 +6,7 @@ import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
 import '../../ads/widgets/ad_carousel.dart';
 import '../../auth/state/auth_state.dart';
+import '../../profile/screens/profile_screen.dart';
 import '../../subscriptions/screens/subscription_plans_screen.dart';
 import '../../subscriptions/services/subscription_service.dart';
 import '../../subscriptions/state/subscription_state.dart';
@@ -97,6 +98,13 @@ class _CatalogScreenState extends State<CatalogScreen> {
             tooltip: 'Mes favoris',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.badge_outlined),
+            tooltip: 'Mon profil',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
             ),
           ),
           IconButton(
