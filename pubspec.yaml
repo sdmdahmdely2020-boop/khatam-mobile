@@ -52,6 +52,13 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
 
+  # Génère la vraie icône de l'app Android (et l'icône adaptative moderne)
+  # à partir des images de la charte graphique — voir la configuration
+  # `flutter_launcher_icons:` tout en bas de ce fichier, et la commande à
+  # lancer dans INSTRUCTIONS.md. N'affecte que la génération, ne fait pas
+  # partie de l'app elle-même une fois construite.
+  flutter_launcher_icons: ^0.14.4
+
 flutter:
   uses-material-design: true
 
@@ -69,3 +76,21 @@ flutter:
     # Icônes de matière (lot 3) — une par matière du Bac, utilisées dans le
     # catalogue/fiche document via SubjectIcon (core/theme/subject_icons.dart).
     - assets/subjects/
+
+# Icône de l'application Android (logo Khatam, lot 1) — générée une seule
+# fois via `dart run flutter_launcher_icons` (voir INSTRUCTIONS.md), PAS à
+# chaque lancement de l'app. Deux images sources : une icône carrée classique
+# (`image_path`, utilisée telle quelle sur les anciennes versions d'Android),
+# et une icône "adaptative" moderne en deux calques (fond + premier plan) qui
+# s'adapte à la forme imposée par le launcher du téléphone (rond, carré aux
+# coins arrondis, "goutte d'eau"...). `adaptive_icon_foreground_inset: 0` car
+# l'image source respecte déjà elle-même la marge de sécurité recommandée
+# (le rond doré n'occupe qu'environ 70% du canevas 432×432) — laisser la
+# valeur par défaut du paquet (16%) aurait rétréci le logo une seconde fois.
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/branding/png/app-icon-1024-square.png"
+  adaptive_icon_background: "assets/branding/png/adaptive-background-432.png"
+  adaptive_icon_foreground: "assets/branding/png/adaptive-foreground-432.png"
+  adaptive_icon_foreground_inset: 0
+  min_sdk_android: 21

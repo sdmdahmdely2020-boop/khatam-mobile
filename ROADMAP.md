@@ -66,9 +66,10 @@ Légende : ✅ fait et livré · 🔄 en cours / en attente de validation · ⬜
 
 ## Phase 7 — Finitions
 
-- ⬜ Icône et nom d'application, écran de démarrage natif
+- ✅ **Icône de l'application Android** (logo Khatam, lot 1) — générée via `flutter_launcher_icons`, icône adaptative moderne (fond + premier plan)
+- ⬜ Nom d'application personnalisé, écran de démarrage natif
 - ⬜ Gestion hors-ligne basique (messages d'erreur réseau clairs, pas de crash)
-- ⬜ Tests sur appareil réel (Android en priorité, vu l'usage majoritairement mobile en Mauritanie)
+- 🔄 **Tests sur appareil réel** (Android) — premier vrai test effectué (APK release sur Galaxy Tab A9) ; a révélé la permission `INTERNET` manquante dans `AndroidManifest.xml`, corrigée
 - ⬜ Préparation à la publication (Google Play en priorité)
 
 ---

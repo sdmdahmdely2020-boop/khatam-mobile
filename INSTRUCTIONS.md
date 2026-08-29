@@ -1,49 +1,62 @@
-# Khatam — Nouvelle livraison : statistiques avancées (professeur)
+# Khatam — Icône de l'application
 
 ## Ce qui a été ajouté
 
-Un nouvel écran "Statistiques", accessible via une icône (📊) en haut de
-l'écran "Mes documents" (à côté de l'icône portefeuille), pour un compte
-professeur. Il affiche :
+Le vrai logo Khatam comme icône de l'app (au lieu de l'icône Flutter par
+défaut) — sur l'écran d'accueil du téléphone, dans les paramètres, partout où
+Android affiche l'icône de l'app. Utilise le paquet `flutter_launcher_icons`,
+qui génère automatiquement toutes les tailles nécessaires (et l'icône
+"adaptative" moderne, qui s'adapte à la forme imposée par le launcher :
+rond, carré arrondi, etc.) à partir des images déjà présentes dans la charte
+graphique (lot 1).
 
-- Vues totales, ventes confirmées, revenu total, et un taux de conversion
-  estimé (ventes ÷ vues).
-- Le document le plus consulté, et celui qui a rapporté le plus.
-- Un petit graphique en barres des revenus sur les 6 derniers mois.
-- Les vues cumulées par matière (avec les icônes déjà en place).
+## Ce zip contient un dossier `assets/` en plus de `lib/`
 
-Aucune nouvelle donnée n'est demandée au serveur : tout est calculé à partir
-de ce que l'app récupère déjà (la liste de tes documents, et ton
-portefeuille) — pas de changement côté backend nécessaire pour cette
-livraison.
+Comme pour l'écran d'accueil et les icônes de matière : ce zip ajoute des
+fichiers dans `assets/branding/png/` (3 nouvelles images). Même méthode que
+les fois précédentes — sélectionne tout le contenu du zip extrait et
+colle-le dans ton dossier `khatam_app`, en choisissant "Remplacer" quand
+Windows le demande.
 
-## Cette fois, pas de nouveau dossier `assets/`
+## Étape supplémentaire, uniquement pour cette livraison
 
-Contrairement aux deux dernières livraisons, il n'y a que le dossier `lib/`
-à remplacer ici (pas d'images à copier). Retour à la méthode simple.
+Contrairement aux livraisons précédentes, il y a une commande de plus à
+lancer une seule fois pour que l'icône soit vraiment créée (Flutter ne le
+fait pas tout seul, il faut le demander explicitement) :
 
-## Comment installer cette livraison
-
-1. Extrais ce zip.
-2. Remplace le dossier `lib` de ton projet par celui de ce zip (renomme
-   l'ancien en `lib_old6` si tu veux garder une sauvegarde, ou remplace
-   directement comme les dernières fois).
-3. `pubspec.yaml` n'a pas changé, pas besoin de le remplacer ni de relancer
-   `flutter pub get`.
-4. Ouvre un terminal dans le projet, lance :
+1. Colle le contenu du zip dans ton projet (voir ci-dessus).
+2. Dans le terminal du projet, lance dans l'ordre :
    ```
-   flutter analyze
+   flutter pub get
+   dart run flutter_launcher_icons
    ```
-5. Envoie-moi une capture du résultat.
-6. Si c'est propre, arrête complètement l'app et relance avec `flutter run`.
-7. Connecte-toi en professeur → "Mes documents" → clique l'icône
-   graphique (📊) en haut → vérifie que les statistiques s'affichent.
+   La deuxième commande affiche plusieurs lignes "Creating..." — c'est normal,
+   c'est elle qui fabrique toutes les tailles d'icône nécessaires. Ça prend
+   quelques secondes.
+3. Lance `flutter analyze` et envoie-moi une capture du résultat.
+4. Reconstruis l'app :
+   ```
+   flutter build apk --release
+   ```
+5. Renvoie `app-release.apk` (même chemin qu'avant :
+   `build\app\outputs\flutter-apk\app-release.apk`) vers ta tablette et
+   réinstalle par-dessus. La nouvelle icône doit apparaître sur l'écran
+   d'accueil dès l'installation terminée.
 
-Note : si tu n'as pas encore de vente confirmée, les chiffres de revenu
-seront à 0 et le graphique affichera "Aucun revenu sur cette période" — c'est
-normal, ce n'est pas une erreur.
+## Rappel : le correctif de connexion internet (à faire si pas encore fait)
+
+Si ce n'est pas déjà fait, ajoute aussi cette ligne dans
+`android\app\src\main\AndroidManifest.xml`, juste après la ligne de la
+permission caméra :
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+```
+Sans elle, l'app ne peut pas du tout contacter le serveur (message "Impossible
+de contacter le serveur"). Ce correctif est indépendant de la livraison de
+l'icône — les deux peuvent être faits en même temps avant de reconstruire
+l'APK.
 
 ## Si quelque chose ne marche pas
 
-Comme d'habitude : une capture de l'écran concerné, et si le terminal
-affiche une erreur, la trace complète depuis le tout début.
+Comme d'habitude : une capture de l'écran/terminal concerné, avec la trace
+complète depuis le tout début en cas d'erreur.
