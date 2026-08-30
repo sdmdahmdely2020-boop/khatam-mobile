@@ -1,66 +1,104 @@
-# Khatam — Application mobile : nouvel écran "Mon profil" (29/08)
+# Khatam — Accueil élève : conversion + motivation (Étape 1, 29/08)
 
 ## Contexte
 
-Tu as demandé un écran de profil regroupant les informations de l'élève, son
-abonnement et ses documents déjà débloqués, en cartes propres, accessible
-depuis l'accueil. C'est fait — aucun changement côté serveur.
+Tu as envoyé un plan complet et ambitieux en 6 volets (élève, professeurs,
+monétisation, admin, UI, stratégie de développement). C'est un très bon plan
+de croissance — je l'ai organisé et documenté en entier (voir plus bas),
+mais comme tu l'as toi-même demandé dans ta stratégie de développement,
+**je n'ai construit que l'étape 1 : l'accueil élève**, et je m'arrête là en
+attendant ta validation avant de continuer sur le reste.
 
-## Ce qui est nouveau
+**Aucun changement côté serveur** dans cette livraison — uniquement
+l'application mobile, comme pour les livraisons précédentes.
 
-Un nouvel écran **"Mon profil"**, avec trois cartes qui s'enchaînent :
+## Ce qui est nouveau sur l'accueil élève
 
-1. **Identité** : nom complet et numéro de téléphone de l'élève connecté.
+1. **Message qui parle au bénéfice, pas au produit** : le bandeau et le
+   bouton d'abonnement ne disent plus "Devenir Premium" mais **"Réussir mon
+   Bac 🚀"**, avec le sous-titre "Accès illimité aux TD et corrigés, sans
+   publicité."
 
-2. **Abonnement** : le plan actuel (Free / Basic / Premium) avec un badge
-   coloré — gris pour Free, bleu pour Basic, vert pour Premium — et, si un
-   abonnement payant est actif, sa date d'expiration ("Expire le
-   JJ/MM/AAAA"). Si l'élève n'est pas encore Premium, un bouton
-   ("Devenir Premium" ou "Passer à Premium" pour un abonné Basic) mène
-   directement vers les formules d'abonnement.
+2. **Paywall plus clair** : en plus du cadenas déjà présent, l'étiquette sur
+   un document verrouillé dit maintenant "🔒 Inclus dans Premium".
 
-3. **Documents débloqués** : la liste des documents que l'élève a
-   effectivement achetés ou débloqués par publicité, chacun dans sa propre
-   carte (vignette, titre, matière, série, comment il a été débloqué et
-   quand). Un message adapté s'affiche s'il n'y a encore rien.
+3. **Une fenêtre intelligente avant d'ouvrir un document verrouillé** :
+   quand un élève touche un document qu'il n'a pas encore débloqué, une
+   petite fenêtre s'ouvre d'abord avec le message "Ce document peut t'aider
+   à réussir ton examen 🎯", le prix (ou "Inclus dans Premium"), et deux
+   boutons — "Réussir mon Bac 🚀" (va vers les abonnements) ou "Voir le
+   document" (continue normalement). Rien n'est jamais bloqué, c'est juste
+   un rappel au bon moment.
 
-## Comment y accéder
+4. **Économies réelles pour un abonné Basic** : un nouveau bloc affiche
+   "Vous avez économisé X MRU" — calculé à partir de ce que l'élève a
+   vraiment payé ce mois-ci, jamais un chiffre inventé. S'il n'y a encore
+   rien économisé ce mois-ci, le bloc ne s'affiche simplement pas (pas de
+   "0 MRU" décourageant). Pour un abonné Premium, comme il n'y a plus
+   d'achat individuel à suivre une fois abonné, un message différent
+   s'affiche à la place ("Accès illimité activé") — j'ai préféré être
+   honnête plutôt que d'inventer un montant qu'on ne peut pas mesurer.
 
-Une nouvelle icône (un badge) a été ajoutée en haut de l'écran d'accueil,
-entre l'icône "Favoris" et l'icône "Mon compte". Elle ouvre directement
-"Mon profil".
+5. **Motivation** :
+   - **Série de jours 🔥** : compte les jours d'affilée où l'élève ouvre
+     l'app. Important à savoir : cette série est stockée uniquement sur son
+     téléphone (pas sur le serveur) — si l'élève change de téléphone ou
+     réinstalle l'app, elle repart à zéro. Un vrai suivi partagé entre
+     appareils demanderait une nouvelle route côté serveur, que je n'ai pas
+     construite pour rester à "zéro changement backend" sur cette étape.
+   - **Objectif de la semaine 🎯** : "X/2 documents débloqués cette
+     semaine", avec une barre de progression. Note : ta demande parlait de
+     "chapitres", mais cette notion n'existe pas encore dans les données
+     (un document a une matière/série/année, pas un découpage en chapitres)
+     — j'ai donc utilisé "documents débloqués" comme équivalent le plus
+     proche et mesurable dès maintenant. Dis-moi si tu préfères une autre
+     unité.
+   - **Progression par matière** : déjà présente depuis la dernière
+     livraison, inchangée.
+
+6. **Notifications — la structure seulement, comme demandé explicitement** :
+   une nouvelle icône (cloche) sur l'accueil ouvre un écran "Notifications".
+   Il est préparé pour recevoir de vraies notifications plus tard (nouveau
+   document, rappel de progression, abonnement qui expire), mais pour
+   l'instant il reste **volontairement vide** — je n'ai pas voulu créer de
+   fausses notifications qui donneraient une impression trompeuse à
+   l'élève. Le vrai système (déclenché automatiquement côté serveur) est
+   une prochaine étape, si tu le souhaites.
 
 ## Ce qui n'a PAS changé
 
-- **Aucun changement côté serveur** — cet écran réutilise deux informations
-  déjà disponibles (l'abonnement et les documents débloqués), simplement
-  présentées ensemble différemment.
-- L'écran "Mon compte" existant n'a pas été touché — il garde son rôle
-  (déconnexion, accès aux corrections IA, etc.). Les deux écrans coexistent.
-- Rien d'autre sur l'accueil n'a changé, à part la nouvelle icône.
+- Aucun changement côté serveur.
+- La disposition générale de l'écran (recherche, chips de série, sélection
+  de la semaine, publicités, couleurs bleu/vert) — rien retiré, seulement
+  de nouveaux blocs ajoutés au bon endroit.
+
+## Le plan complet, pour la suite
+
+J'ai organisé ta demande en 6 volets dans un document séparé, disponible
+dans l'espace de travail Claude de ce projet
+(`khatam-strategie-croissance-29-08.md`) : professeurs (statut "actif",
+classement, suivi des gains mensuels, répartition 70/30), monétisation
+(urgence à l'abonnement, upsell), tableau de bord admin (utilisateurs actifs,
+abonnements, revenus, top professeurs), et les finitions UI/UX (animations,
+hiérarchie visuelle). Rien de tout ça n'est construit — c'est un plan
+d'étapes, prêt à être lancé une par une quand tu valides.
 
 ## Installation
 
-Comme d'habitude : seul le dossier `lib/` change, aucun nouveau paquet à
-ajouter.
+Comme d'habitude : seul le dossier `lib/` change.
 
 1. Colle le contenu de ce zip dans ton projet (remplace `lib/`).
 2. `flutter pub get` par précaution.
-3. `flutter analyze` — des lignes "info" (style) sont normales, seule une
-   ligne "error" en rouge demanderait une correction.
-4. Redémarre complètement l'application (ferme-la depuis les applications
-   récentes puis rouvre-la, ou relance "Run").
-5. Connecte-toi avec un compte élève, et sur l'accueil, appuie sur la
-   nouvelle icône "badge" en haut : tu dois voir tes informations, ton
-   abonnement, et tes documents débloqués.
+3. `flutter analyze` — des lignes "info" (style) sont normales.
+4. Redémarre complètement l'application.
+5. Connecte-toi avec un compte élève et regarde l'accueil : le nouveau
+   texte "Réussir mon Bac 🚀", le bloc série/objectif, touche un document
+   verrouillé pour voir la nouvelle fenêtre, et l'icône cloche en haut.
 
 ## Et après ?
 
-Dis-moi si tu veux ajuster un détail sur cet écran (par exemple ajouter une
-photo de profil, ou permettre de modifier le numéro de téléphone), ou passer
-à autre chose du plan plus large (profil public d'un professeur,
-modification du prix d'un document depuis l'app, boost, messagerie avec
-l'administrateur...).
+Dis-moi ce que tu en penses, et si je peux continuer avec la suite du plan
+(professeurs, monétisation, admin) — étape par étape, comme prévu.
 
 ## Si quelque chose ne marche pas
 

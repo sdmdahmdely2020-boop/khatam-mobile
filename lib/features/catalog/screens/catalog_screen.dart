@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/storage/local_storage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/subject_icons.dart';
 import '../../account/screens/account_screen.dart';
 import '../../ads/widgets/ad_carousel.dart';
 import '../../auth/state/auth_state.dart';
+import '../../motivation/state/motivation_state.dart';
+import '../../notifications/screens/notifications_screen.dart';
 import '../../profile/screens/profile_screen.dart';
+import '../../profile/services/profile_service.dart';
 import '../../subscriptions/screens/subscription_plans_screen.dart';
 import '../../subscriptions/services/subscription_service.dart';
 import '../../subscriptions/state/subscription_state.dart';
@@ -40,6 +44,12 @@ class CatalogHome extends StatelessWidget {
         ),
         ChangeNotifierProvider<SubscriptionState>(
           create: (_) => SubscriptionState(subscriptionService: SubscriptionService(apiClient: apiClient))..load(),
+        ),
+        // Motivation (série de jours + objectif hebdomadaire + économies du
+        // mois, 29/08) — voir `motivation_state.dart`. Un seul appel réseau
+        // vers une route déjà existante (`GET /api/documents/mine`).
+        ChangeNotifierProvider<MotivationState>(
+          create: (_) => MotivationState(profileService: ProfileService(apiClient: apiClient))..load(),
         ),
       ],
       child: const CatalogScreen(),
@@ -76,6 +86,20 @@ class CatalogScreen extends StatefulWidget {
 class _CatalogScreenState extends State<CatalogScreen> {
   final _searchController = TextEditingController();
 
+  /// Série de jours d'affilée (motivation, 29/08) — `null` tant qu'elle n'a
+  /// pas encore été calculée (évite d'afficher brièvement "0 jour" au tout
+  /// premier affichage). Voir `LocalStorage.recordActivityAndGetStreak()` :
+  /// purement local à cet appareil, aucun changement backend.
+  int? _streakDays;
+
+  @override
+  void initState() {
+    super.initState();
+    LocalStorage().recordActivityAndGetStreak().then((days) {
+      if (mounted) setState(() => _streakDays = days);
+    });
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -93,6 +117,13 @@ class _CatalogScreenState extends State<CatalogScreen> {
         elevation: 0,
         foregroundColor: AppTheme.brandBlue,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none),
+            tooltip: 'Notifications',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.favorite_border),
             tooltip: 'Mes favoris',
@@ -133,6 +164,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
   Widget _buildHeader(BuildContext context, CatalogState catalogState) {
     final user = context.watch<AuthState>().currentUser;
     final subscriptionState = context.watch<SubscriptionState>();
+    final motivationState = context.watch<MotivationState>();
     final firstName = (user?.fullName ?? '')
         .trim()
         .split(RegExp(r'\s+'))
@@ -212,7 +244,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
           ),
         ),
         const SizedBox(height: 4),
+        _MotivationStrip(streakDays: _streakDays, motivationState: motivationState),
         _SubscriptionBanner(subscriptionState: subscriptionState),
+        _SavingsCard(subscriptionState: subscriptionState, motivationState: motivationState),
         _ProgressBySubject(documents: catalogState.documents),
         const SubjectQuickFilter(),
         // La sélection de la semaine ne s'affiche que sur l'accueil "libre"
@@ -315,11 +349,12 @@ class _DocumentCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => DocumentDetailScreen(documentId: document.id)),
-          );
-        },
+        // Ouverture directe pour tout ce qui est gratuit ou déjà débloqué
+        // (comportement inchangé). Pour un document verrouillé, une étape
+        // intermédiaire ("upsell intelligent", demandé le 29/08) explique
+        // d'abord le prix/l'inclusion Premium avant de continuer — jamais
+        // bloquant, l'élève peut toujours choisir "Voir le document".
+        onTap: locked ? () => _showUpsellSheet(context, document) : () => _openDocument(context, document),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -419,7 +454,7 @@ class _DocumentCard extends StatelessWidget {
                         if (document.unlocked)
                           const _Tag(label: 'Débloqué', color: AppTheme.brandGreen, filled: true),
                         if (locked)
-                          const _Tag(label: 'Inclus dans Premium', color: AppTheme.brandGreen),
+                          const _Tag(label: '🔒 Inclus dans Premium', color: AppTheme.brandGreen),
                       ],
                     ),
                   ],
@@ -431,6 +466,133 @@ class _DocumentCard extends StatelessWidget {
       ),
     );
   }
+}
+
+void _openDocument(BuildContext context, DocumentItem document) {
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (_) => DocumentDetailScreen(documentId: document.id)),
+  );
+}
+
+/// "Upsell intelligent" (29/08) : avant d'ouvrir un document verrouillé,
+/// une feuille explique clairement le prix (ou l'inclusion Premium) et
+/// pourquoi ce document est utile, avec deux choix — continuer normalement,
+/// ou aller directement vers les abonnements. Jamais bloquant : l'élève
+/// choisit toujours ce qu'il veut, cette étape ne fait qu'ajouter du
+/// contexte au bon moment.
+void _showUpsellSheet(BuildContext context, DocumentItem document) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (sheetContext) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.brandGreen.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.lock_outline, color: AppTheme.brandGreen, size: 18),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    document.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Ce document peut t\'aider à réussir ton examen 🎯',
+              style: const TextStyle(color: Colors.black54, fontSize: 13),
+            ),
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF6F8FB),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.workspace_premium_outlined, size: 16, color: AppTheme.brandGreen),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Inclus dans Premium — ou ${document.priceLabel} à l\'unité',
+                      style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SubscriptionPlansScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.brandGreen,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text(
+                  'Réussir mon Bac 🚀',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  _openDocument(context, document);
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text('Voir le document', style: TextStyle(fontSize: 13.5)),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 /// Bandeau d'accueil affichant le plan actif, ou une invitation à souscrire
@@ -461,8 +623,10 @@ class _SubscriptionBanner extends StatelessWidget {
       title = 'Abonnement Basic actif';
       subtitle = 'Réduction appliquée sur tous les documents payants.';
     } else {
-      title = 'Passez à Basic ou Premium';
-      subtitle = 'Réductions sur les documents et suppression des publicités.';
+      // Message de valeur (29/08) : on parle du bénéfice pour l'élève
+      // (réussir le Bac), pas du produit ("abonnement").
+      title = 'Réussir mon Bac 🚀';
+      subtitle = 'Accès illimité aux TD et corrigés, sans publicité.';
     }
 
     return Padding(
@@ -511,7 +675,7 @@ class _SubscriptionBanner extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: const Text(
-                    'Devenir Premium',
+                    'Réussir mon Bac 🚀',
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -519,6 +683,179 @@ class _SubscriptionBanner extends StatelessWidget {
                 Icon(Icons.chevron_right, color: color),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Motivation" (29/08) : série de jours d'affilée (locale à l'appareil,
+/// voir `LocalStorage.recordActivityAndGetStreak`) + objectif hebdomadaire
+/// (nombre de documents débloqués cette semaine, voir `MotivationState`).
+/// La série s'affiche dès qu'elle est calculée (quasi instantané, purement
+/// local) ; le bloc "objectif" n'apparaît qu'une fois [MotivationState]
+/// chargé, pour ne jamais afficher "0/2" de façon trompeuse le temps du
+/// chargement réseau.
+class _MotivationStrip extends StatelessWidget {
+  final int? streakDays;
+  final MotivationState motivationState;
+
+  const _MotivationStrip({required this.streakDays, required this.motivationState});
+
+  @override
+  Widget build(BuildContext context) {
+    if (streakDays == null) return const SizedBox.shrink();
+
+    final loaded = motivationState.status == MotivationLoadStatus.loaded;
+    final weeklyCount = motivationState.summary.weeklyUnlockedCount;
+    const weeklyGoal = MotivationState.weeklyGoal;
+    final weeklyRatio = (weeklyCount / weeklyGoal).clamp(0.0, 1.0).toDouble();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF6F8FB),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  const Text('🔥', style: TextStyle(fontSize: 20)),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$streakDays',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      Text(
+                        streakDays == 1 ? 'jour d\'affilée' : 'jours d\'affilée',
+                        style: const TextStyle(color: Colors.black54, fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            if (loaded) ...[
+              Container(width: 1, height: 36, color: Colors.black12),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Text('🎯', style: TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                        const Expanded(
+                          child: Text(
+                            'Objectif de la semaine',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Text(
+                          '$weeklyCount/$weeklyGoal',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.brandGreen,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: weeklyRatio,
+                        minHeight: 6,
+                        backgroundColor: Colors.black12,
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.brandGreen),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Économies" (29/08) — voir `MotivationSummary` pour la limite honnête
+/// concernant les abonnés Premium (aucune donnée d'achat individuel à partir
+/// du moment où l'abonnement est actif, donc aucun montant inventé : message
+/// de valeur à la place d'un chiffre). Rien tant que l'abonnement ET la
+/// motivation ne sont pas tous deux chargés, et rien du tout pour un élève
+/// "Free" (le bandeau au-dessus invite déjà à s'abonner).
+class _SavingsCard extends StatelessWidget {
+  final SubscriptionState subscriptionState;
+  final MotivationState motivationState;
+
+  const _SavingsCard({required this.subscriptionState, required this.motivationState});
+
+  @override
+  Widget build(BuildContext context) {
+    if (subscriptionState.status != SubscriptionLoadStatus.loaded) return const SizedBox.shrink();
+    if (subscriptionState.isFree) return const SizedBox.shrink();
+
+    final String title;
+    final String subtitle;
+
+    if (subscriptionState.isPremium) {
+      title = 'Accès illimité activé';
+      subtitle = 'Aucune limite ce mois-ci sur les documents payants du catalogue.';
+    } else {
+      if (motivationState.status != MotivationLoadStatus.loaded) return const SizedBox.shrink();
+      final saved = motivationState.summary.monthlySavingsMru;
+      // Rien à afficher tant qu'aucune économie réelle n'a encore eu lieu ce
+      // mois-ci — jamais de "0 MRU économisé", peu motivant et peu honnête
+      // comme accroche.
+      if (saved <= 0) return const SizedBox.shrink();
+      title = 'Vous avez économisé ${saved.toStringAsFixed(0)} MRU';
+      subtitle = 'Grâce à votre réduction Basic, ce mois-ci.';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: AppTheme.brandGreen.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            const Text('💰', style: TextStyle(fontSize: 18)),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.brandGreen,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(subtitle, style: const TextStyle(color: Colors.black54, fontSize: 11.5)),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
